@@ -1,21 +1,52 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uerj_companion/app_theme.dart';
+import 'package:uerj_companion/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:uerj_companion/firebase_options.dart';
 import 'package:uerj_companion/shared/config/app_router.dart';
+import 'package:uerj_companion/shared/config/service_locator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(const MyApp());
+  setupLocator();
+
+  runApp(BlocProvider(create: (_) => sl<AuthBloc>(), child: const MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool _linkChecked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAuth.instance.authStateChanges().listen((user) {
+      appRouter.refresh();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_linkChecked) {
+      context.read<AuthBloc>().add(
+        CheckSignInLink(Uri.parse(Uri.base.toString())),
+      );
+      _linkChecked = true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
@@ -23,6 +54,25 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       routerConfig: appRouter,
+      // Usamos o builder para inserir um BlocListener global
+      builder: (context, child) {
+        return BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            // Este listener vai pegar erros de qualquer lugar,
+            // incluindo a falha de login pelo link.
+            if (state is AuthError) {
+              final scaffoldMessenger = ScaffoldMessenger.of(context);
+              scaffoldMessenger.showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+              );
+            }
+          },
+          child: child!,
+        );
+      },
     );
   }
 }
