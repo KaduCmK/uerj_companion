@@ -10,12 +10,21 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
 
   void _sendSignInLink() {
-    if (_emailController.text.isNotEmpty) {
-      context.read<AuthBloc>().add(SendSignInLink(_emailController.text));
+    if (_formKey.currentState?.validate() ?? false) {
+      context.read<AuthBloc>().add(
+        SendSignInLink(_emailController.text.trim()),
+      );
     }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
   }
 
   @override
@@ -36,32 +45,45 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           return Center(
             child: Padding(
               padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    "Bem-Vindo!",
-                    style: textTheme.headlineLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  TextField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Seu email universitário',
-                      border: OutlineInputBorder(),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      "Bem-Vindo!",
+                      style: textTheme.headlineLarge,
+                      textAlign: TextAlign.center,
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: state is AuthLoading ? null : _sendSignInLink,
-                    child: state is AuthLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text("Entrar com Email"),
-                  ),
-                ],
+                    const SizedBox(height: 24),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(
+                        labelText: 'Seu email universitário',
+                        border: OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Campo obrigatório';
+                        }
+                        if (!value.trim().endsWith('@graduacao.uerj.br')) {
+                          return 'Utilize seu email universitário. (Somente alunos da graduação)';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: state is AuthLoading ? null : _sendSignInLink,
+                      child: state is AuthLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text("Entrar com Email"),
+                    ),
+                  ],
+                ),
               ),
             ),
           );

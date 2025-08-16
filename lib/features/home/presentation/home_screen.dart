@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,14 +14,45 @@ class HomeScreen extends StatelessWidget {
         title: const Text('Uerjiano'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => FirebaseAuth.instance.signOut(),
+            icon: const CircleAvatar(),
+            onPressed: () => context.push('/profile'),
           ),
         ],
       ),
-      body: Center(
-        child: Text('Logado como: ${user?.email ?? 'Usuário'}'),
+      drawer: Drawer(
+        child: ListView(
+          padding: const EdgeInsets.all(4),
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+              child: Text(
+                'Uerjiano',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            ),
+            OutlinedButton.icon(
+              onPressed: () {},
+              icon: const Icon(Icons.person),
+              label: const Text('Seu Perfil'),
+            ),
+            const Divider(height: 16),
+            ListTile(
+              leading: Icon(Icons.home),
+              title: const Text('Página Inicial'),
+              onTap: () => context.go('/'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Configurações'),
+              onTap: () {
+                Navigator.pop(context);
+                // Ex: context.push('/settings');
+              },
+            ),
+          ],
+        ),
       ),
+      body: Center(child: Text('Logado como: ${user?.email ?? 'Usuário'}')),
     );
   }
 }
