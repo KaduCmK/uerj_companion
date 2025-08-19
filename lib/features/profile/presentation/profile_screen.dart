@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,10 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             OutlinedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                context.pop();
+                context.push('/user-profile');
+              },
               icon: const Icon(Icons.person),
               label: const Text('Seu Perfil'),
             ),
@@ -39,7 +42,7 @@ class HomeScreen extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.home),
               title: const Text('Página Inicial'),
-              onTap: () => context.go('/'),
+              onTap: () => context.go('/profile'),
             ),
             ListTile(
               leading: const Icon(Icons.settings),
