@@ -26,7 +26,7 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 16,),
             Text("Acesso rápido:", style: textTheme.titleMedium,),
-            OutlinedButton(onPressed: () {}, child: Text("Informações de cursos"))
+            OutlinedButton(onPressed: () => context.push('/info-cursos'), child: Text("Informações de cursos"))
           ],
         ),
       ),
