@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:uerj_companion/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:uerj_companion/features/auth/presentation/validating_screen.dart';
 import 'package:uerj_companion/features/auth/presentation/welcome_screen.dart';
+import 'package:uerj_companion/features/cursos/domain/entities/curso.dart';
+import 'package:uerj_companion/features/cursos/presentation/curso_edit/curso_edit_screen.dart';
 import 'package:uerj_companion/features/cursos/presentation/cursos_screen.dart';
 import 'package:uerj_companion/features/home/home_screen.dart';
 import 'package:uerj_companion/features/profile/presentation/profile_screen.dart';
@@ -71,5 +73,12 @@ final appRouter = GoRouter(
     GoRoute(path: '/profile', builder: (context, state) => ProfileScreen()),
 
     GoRoute(path: '/info-cursos', builder: (context, state) => CursosScreen()),
+    GoRoute(
+      path: '/edit-curso',
+      builder: (context, state) {
+        final curso = state.extra as Curso?;
+        return CursoEditScreen(curso: curso);
+      },
+    ),
   ],
 );

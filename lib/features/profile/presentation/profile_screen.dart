@@ -49,7 +49,7 @@ class ProfileScreen extends StatelessWidget {
               title: const Text('Configurações'),
               onTap: () {
                 Navigator.pop(context);
-                // Ex: context.push('/settings');
+                context.push('/info-cursos');
               },
             ),
           ],
