@@ -84,7 +84,7 @@ class CursoEditBloc extends Bloc<CursoEditEvent, CursoEditState> {
   ) async {
     emit(state.copyWith(status: CursoEditStatus.saving));
     try {
-      final curso = Curso(id: state.initialCurso!.id, nome: state.cursoNome);
+      final curso = Curso(id: state.initialCurso?.id, nome: state.cursoNome);
       await _repository.saveCurso(curso, state.materias);
       emit(state.copyWith(status: CursoEditStatus.success));
     } catch (e) {

@@ -8,6 +8,7 @@ import 'package:uerj_companion/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:uerj_companion/features/auth/presentation/validating_screen.dart';
 import 'package:uerj_companion/features/auth/presentation/welcome_screen.dart';
 import 'package:uerj_companion/features/cursos/domain/entities/curso.dart';
+import 'package:uerj_companion/features/cursos/presentation/bloc/curso_bloc.dart';
 import 'package:uerj_companion/features/cursos/presentation/curso_edit/bloc/curso_edit_bloc.dart';
 import 'package:uerj_companion/features/cursos/presentation/curso_edit/curso_edit_screen.dart';
 import 'package:uerj_companion/features/cursos/presentation/cursos_screen.dart';
@@ -74,7 +75,13 @@ final appRouter = GoRouter(
 
     GoRoute(path: '/profile', builder: (context, state) => ProfileScreen()),
 
-    GoRoute(path: '/info-cursos', builder: (context, state) => CursosScreen()),
+    GoRoute(
+      path: '/info-cursos',
+      builder: (context, state) => BlocProvider(
+        create: (_) => CursoBloc(cursosRepository: sl())..add(LoadCursos()),
+        child: CursosScreen(),
+      ),
+    ),
     GoRoute(
       path: '/edit-curso',
       builder: (context, state) {
