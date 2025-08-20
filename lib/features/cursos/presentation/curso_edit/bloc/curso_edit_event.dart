@@ -43,4 +43,4 @@ class RemoveMateria extends CursoEditEvent {
   List<Object> get props => [materia];
 }
 
-class SaveCurso extends CursoEditEvent {}
+class SetCurso extends CursoEditEvent {}

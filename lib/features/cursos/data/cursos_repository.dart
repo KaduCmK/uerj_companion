@@ -21,30 +21,16 @@ class CursosRepository {
   }
 
   Future<void> saveCurso(Curso curso, List<Materia> materias) async {
-    final batch = _firestore.batch();
+    await _cursosCollection
+        .doc(curso.id)
+        .set(curso.toMap(), SetOptions(merge: true));
 
-    DocumentReference cursoRef;
-    if (curso.id == null) {
-      // Criando novo curso
-      cursoRef = _cursosCollection.doc();
-    } else {
-      // Editando curso existente
-      cursoRef = _cursosCollection.doc(curso.id);
+    for (final materia in materias) {
+      await _cursosCollection
+          .doc(curso.id)
+          .collection('materias')
+          .doc(materia.id)
+          .set(materia.toMap(), SetOptions(merge: true));
     }
-    batch.set(cursoRef, curso.toMap());
-
-    // Deleta todas as matérias antigas para simplificar
-    final materiasSnapshot = await cursoRef.collection('materias').get();
-    for (var doc in materiasSnapshot.docs) {
-      batch.delete(doc.reference);
-    }
-
-    // Adiciona as novas matérias
-    for (var materia in materias) {
-      final materiaRef = cursoRef.collection('materias').doc();
-      batch.set(materiaRef, materia.toMap());
-    }
-
-    await batch.commit();
   }
 }

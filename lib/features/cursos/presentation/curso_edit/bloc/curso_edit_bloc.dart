@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:logger/logger.dart';
 import 'package:uerj_companion/features/cursos/data/cursos_repository.dart';
 import 'package:uerj_companion/features/cursos/domain/entities/curso.dart';
 import 'package:uerj_companion/features/cursos/domain/entities/materia.dart';
@@ -8,16 +9,20 @@ part 'curso_edit_event.dart';
 part 'curso_edit_state.dart';
 
 class CursoEditBloc extends Bloc<CursoEditEvent, CursoEditState> {
+  final Curso? cursoToEdit;
   final CursosRepository _repository;
+  final _logger = Logger();
 
-  CursoEditBloc({required CursosRepository cursosRepository})
-    : _repository = cursosRepository,
-      super(const CursoEditState()) {
+  CursoEditBloc({
+    required CursosRepository cursosRepository,
+    required this.cursoToEdit,
+  }) : _repository = cursosRepository,
+       super(const CursoEditState()) {
     on<LoadCursoToEdit>(_onLoadCursoToEdit);
     on<UpdateCursoName>(_onUpdateCursoName);
     on<AddMateria>(_onAddMateria);
     on<RemoveMateria>(_onRemoveMateria);
-    on<SaveCurso>(_onSaveCurso);
+    on<SetCurso>(_onSaveCurso);
   }
 
   Future<void> _onLoadCursoToEdit(
@@ -47,6 +52,7 @@ class CursoEditBloc extends Bloc<CursoEditEvent, CursoEditState> {
         );
       }
     } catch (e) {
+      _logger.e(e);
       emit(
         state.copyWith(
           status: CursoEditStatus.error,
@@ -73,7 +79,7 @@ class CursoEditBloc extends Bloc<CursoEditEvent, CursoEditState> {
   }
 
   Future<void> _onSaveCurso(
-    SaveCurso event,
+    SetCurso event,
     Emitter<CursoEditState> emit,
   ) async {
     emit(state.copyWith(status: CursoEditStatus.saving));
@@ -82,6 +88,7 @@ class CursoEditBloc extends Bloc<CursoEditEvent, CursoEditState> {
       await _repository.saveCurso(curso, state.materias);
       emit(state.copyWith(status: CursoEditStatus.success));
     } catch (e) {
+      _logger.e(e);
       emit(
         state.copyWith(
           status: CursoEditStatus.error,

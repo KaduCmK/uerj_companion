@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uerj_companion/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:uerj_companion/features/auth/presentation/validating_screen.dart';
 import 'package:uerj_companion/features/auth/presentation/welcome_screen.dart';
 import 'package:uerj_companion/features/cursos/domain/entities/curso.dart';
+import 'package:uerj_companion/features/cursos/presentation/curso_edit/bloc/curso_edit_bloc.dart';
 import 'package:uerj_companion/features/cursos/presentation/curso_edit/curso_edit_screen.dart';
 import 'package:uerj_companion/features/cursos/presentation/cursos_screen.dart';
 import 'package:uerj_companion/features/home/home_screen.dart';
@@ -77,7 +79,12 @@ final appRouter = GoRouter(
       path: '/edit-curso',
       builder: (context, state) {
         final curso = state.extra as Curso?;
-        return CursoEditScreen(curso: curso);
+        return BlocProvider(
+          create: (context) =>
+              CursoEditBloc(cursosRepository: sl(), cursoToEdit: curso)
+                ..add(LoadCursoToEdit(curso)),
+          child: CursoEditScreen(),
+        );
       },
     ),
   ],
