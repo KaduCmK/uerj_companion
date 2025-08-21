@@ -22,3 +22,5 @@ exports.beforeCreate = beforeUserCreated((event) => {
         )
     }
 })
+
+export * from './docentes';

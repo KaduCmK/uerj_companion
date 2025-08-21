@@ -1,0 +1,30 @@
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:logger/logger.dart';
+import 'package:uerj_companion/features/docentes/data/docente_repository.dart';
+import 'package:uerj_companion/features/docentes/domain/entities/docente.dart';
+
+part 'docentes_event.dart';
+part 'docentes_state.dart';
+
+class DocentesBloc extends Bloc<DocentesEvent, DocentesState> {
+  final _logger = Logger();
+  final DocenteRepository _repository;
+
+  DocentesBloc({required DocenteRepository docenteRepository})
+    : _repository = docenteRepository,
+      super(DocentesInitial()) {
+    on<GetDocentes>((event, emit) async {
+      emit(DocentesLoading());
+
+      try {
+        final docentes = await _repository.getDocentes();
+
+        emit(DocentesLoaded(docentes));
+      } catch (e) {
+        _logger.e(e);
+        emit(DocentesError(e.toString()));
+      }
+    });
+  }
+}

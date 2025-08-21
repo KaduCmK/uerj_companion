@@ -12,6 +12,8 @@ import 'package:uerj_companion/features/cursos/presentation/bloc/curso_bloc.dart
 import 'package:uerj_companion/features/cursos/presentation/curso_edit/bloc/curso_edit_bloc.dart';
 import 'package:uerj_companion/features/cursos/presentation/curso_edit/curso_edit_screen.dart';
 import 'package:uerj_companion/features/cursos/presentation/cursos_screen.dart';
+import 'package:uerj_companion/features/docentes/presentation/bloc/docentes_bloc.dart';
+import 'package:uerj_companion/features/docentes/presentation/docentes_screen.dart';
 import 'package:uerj_companion/features/home/home_screen.dart';
 import 'package:uerj_companion/features/profile/presentation/profile_screen.dart';
 import 'package:uerj_companion/shared/config/service_locator.dart';
@@ -93,6 +95,15 @@ final appRouter = GoRouter(
           child: CursoEditScreen(),
         );
       },
+    ),
+
+    GoRoute(
+      path: '/docentes',
+      builder: (context, state) => BlocProvider(
+        create: (context) =>
+            DocentesBloc(docenteRepository: sl())..add(GetDocentes()),
+        child: const DocentesScreen(),
+      ),
     ),
   ],
 );

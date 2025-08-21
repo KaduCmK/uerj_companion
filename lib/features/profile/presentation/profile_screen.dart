@@ -50,6 +50,11 @@ class ProfileScreen extends StatelessWidget {
               onTap: () => context.push('/info-cursos'),
             ),
             ListTile(
+              leading: const Icon(Icons.school,),
+              title: const Text('Professores'),
+              onTap: () => context.push('/docentes'),
+            ),
+            ListTile(
               leading: const Icon(Icons.settings),
               title: const Text('Configurações'),
               onTap: () {},
