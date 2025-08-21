@@ -45,12 +45,14 @@ class ProfileScreen extends StatelessWidget {
               onTap: () => context.go('/profile'),
             ),
             ListTile(
+              leading: const Icon(Icons.school),
+              title: const Text('Cursos e Matérias'),
+              onTap: () => context.push('/info-cursos'),
+            ),
+            ListTile(
               leading: const Icon(Icons.settings),
               title: const Text('Configurações'),
-              onTap: () {
-                Navigator.pop(context);
-                // Ex: context.push('/settings');
-              },
+              onTap: () {},
             ),
           ],
         ),

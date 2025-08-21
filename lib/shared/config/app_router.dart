@@ -2,10 +2,16 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uerj_companion/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:uerj_companion/features/auth/presentation/validating_screen.dart';
 import 'package:uerj_companion/features/auth/presentation/welcome_screen.dart';
+import 'package:uerj_companion/features/cursos/domain/entities/curso.dart';
+import 'package:uerj_companion/features/cursos/presentation/bloc/curso_bloc.dart';
+import 'package:uerj_companion/features/cursos/presentation/curso_edit/bloc/curso_edit_bloc.dart';
+import 'package:uerj_companion/features/cursos/presentation/curso_edit/curso_edit_screen.dart';
+import 'package:uerj_companion/features/cursos/presentation/cursos_screen.dart';
 import 'package:uerj_companion/features/home/home_screen.dart';
 import 'package:uerj_companion/features/profile/presentation/profile_screen.dart';
 import 'package:uerj_companion/shared/config/service_locator.dart';
@@ -68,5 +74,25 @@ final appRouter = GoRouter(
     ),
 
     GoRoute(path: '/profile', builder: (context, state) => ProfileScreen()),
+
+    GoRoute(
+      path: '/info-cursos',
+      builder: (context, state) => BlocProvider(
+        create: (_) => CursoBloc(cursosRepository: sl())..add(LoadCursos()),
+        child: CursosScreen(),
+      ),
+    ),
+    GoRoute(
+      path: '/edit-curso',
+      builder: (context, state) {
+        final curso = state.extra as Curso?;
+        return BlocProvider(
+          create: (context) =>
+              CursoEditBloc(cursosRepository: sl(), cursoToEdit: curso)
+                ..add(LoadCursoToEdit(curso)),
+          child: CursoEditScreen(),
+        );
+      },
+    ),
   ],
 );
