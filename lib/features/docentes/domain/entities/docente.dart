@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
@@ -37,5 +38,21 @@ class Docente extends Equatable {
       'mediaAvaliacoes': mediaAvaliacoes,
       'resumoIA': resumoIA,
     };
+  }
+
+  Docente copyWith({
+    String? id,
+    String? nome,
+    String? email,
+    double? mediaAvaliacoes,
+    String? resumoIA,
+  }) {
+    return Docente(
+      id: id ?? this.id,
+      nome: nome ?? this.nome,
+      email: email ?? this.email,
+      mediaAvaliacoes: mediaAvaliacoes ?? this.mediaAvaliacoes,
+      resumoIA: resumoIA ?? this.resumoIA,
+    );
   }
 }

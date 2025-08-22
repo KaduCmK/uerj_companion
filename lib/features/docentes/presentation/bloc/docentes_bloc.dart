@@ -30,5 +30,24 @@ class DocentesBloc extends Bloc<DocentesEvent, DocentesState> {
     on<EditDocente>((event, emit) {
       emit(DocenteEditing(event.docente));
     });
+
+    on<SetDocente>((event, emit) async {
+      final docente = (state as DocenteEditing).docente;
+      emit(DocentesLoading());
+
+      try {
+        final newDocente = Docente(
+          id: docente?.id,
+          nome: event.nome,
+          email: event.email,
+        );
+        await _repository.upsertDocente(newDocente);
+
+        add(GetDocentes());
+      } catch (e) {
+        _logger.e(e);
+        emit(DocentesError(e.toString()));
+      }
+    });
   }
 }

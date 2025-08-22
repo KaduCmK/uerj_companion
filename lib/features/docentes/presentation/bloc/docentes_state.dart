@@ -8,7 +8,7 @@ sealed class DocentesState extends Equatable {
 }
 
 final class DocentesInitial extends DocentesState {}
-  
+
 final class DocentesLoading extends DocentesState {}
 
 final class DocentesLoaded extends DocentesState {
@@ -21,13 +21,19 @@ final class DocentesLoaded extends DocentesState {
 }
 
 final class DocenteEditing extends DocentesState {
-  final Docente docente;
+  final Docente? docente;
 
   const DocenteEditing(this.docente);
 
   @override
   List<Object?> get props => [docente];
+
+  DocenteEditing copyWith({Docente? docente}) {
+    return DocenteEditing(docente ?? this.docente);
+  }
 }
+
+final class DocenteSaving extends DocentesState {}
 
 final class DocentesError extends DocentesState {
   final String message;

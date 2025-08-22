@@ -13,57 +13,74 @@ class DocentesScreen extends StatelessWidget {
         title: const Text('Docentes'),
         automaticallyImplyLeading: true,
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverPadding(
-            padding: const EdgeInsets.all(8),
-            sliver: SliverToBoxAdapter(
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.add),
-                label: const Text("Adicionar Docente"),
-                onPressed: () => context.push('/edit-docente'),
+      body: BlocListener<DocentesBloc, DocentesState>(
+        listener: (context, state) {
+          if (state is DocenteEditing) {
+            context.push('/edit-docente');
+          }
+        },
+        child: CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.all(8),
+              sliver: SliverToBoxAdapter(
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.add),
+                  label: const Text("Adicionar Docente"),
+                  onPressed: () =>
+                      context.read<DocentesBloc>().add(EditDocente()),
+                ),
               ),
             ),
-          ),
-
-          SliverPadding(
-            padding: const EdgeInsets.all(8),
-            sliver: SliverToBoxAdapter(
-              child: TextField(
-                decoration: const InputDecoration(labelText: "Buscar Docente"),
+            SliverPadding(
+              padding: const EdgeInsets.all(8),
+              sliver: SliverToBoxAdapter(
+                child: TextField(
+                  decoration: const InputDecoration(labelText: "Buscar Docente"),
+                ),
               ),
             ),
-          ),
-
-          SliverToBoxAdapter(
-            child: BlocConsumer<DocentesBloc, DocentesState>(
-              listener: (context, state) {
-                if (state is DocenteEditing)
-                  context.push('/edit-docente', extra: state.docente);
-              },
+            BlocBuilder<DocentesBloc, DocentesState>(
               builder: (context, state) {
-                if (state is! DocentesLoaded)
-                  return const CircularProgressIndicator();
+                if (state is! DocentesLoaded) {
+                  return const SliverFillRemaining(
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
 
-                if (state.docentes.isEmpty) return const Text("Nenhum docente");
-
-                return ListView.builder(
-                  itemCount: state.docentes.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(state.docentes[index].nome),
-                      subtitle: Text(state.docentes[index].email),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () {},
+                if (state.docentes.isEmpty) {
+                  return const SliverToBoxAdapter(
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text("Nenhum docente"),
                       ),
-                    );
-                  },
+                    ),
+                  );
+                }
+
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final docente = state.docentes[index];
+                      return ListTile(
+                        title: Text(docente.nome),
+                        subtitle: Text(docente.email),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () => context
+                              .read<DocentesBloc>()
+                              .add(EditDocente(docente: docente)),
+                        ),
+                      );
+                    },
+                    childCount: state.docentes.length,
+                  ),
                 );
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
