@@ -21,6 +21,11 @@ class DocenteRepository {
     return snapshot.docs.map((doc) => Docente.fromFirestore(doc)).toList();
   }
 
+  Future<Docente> selectDocente(String docenteId) async {
+    final snapshot = await _docentesCollection.doc(docenteId).get();
+    return Docente.fromFirestore(snapshot);
+  }
+
   Stream<List<Avaliacao>> getAvaliacoes(String docenteId) {
     return _docentesCollection
         .doc(docenteId)

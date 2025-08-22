@@ -33,7 +33,15 @@ final class DocenteEditing extends DocentesState {
   }
 }
 
-final class DocenteSaving extends DocentesState {}
+final class DocenteProfileLoaded extends DocentesState {
+  final Docente docente;
+  final List<Avaliacao> avaliacoes;
+
+  const DocenteProfileLoaded({required this.docente, required this.avaliacoes});
+
+  @override
+  List<Object?> get props => [docente, avaliacoes];
+}
 
 final class DocentesError extends DocentesState {
   final String message;

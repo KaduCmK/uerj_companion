@@ -27,3 +27,12 @@ final class SetDocente extends DocentesEvent {
   @override
   List<Object?> get props => [nome, email];
 }
+
+final class SelectDocente extends DocentesEvent {
+  final String docenteId;
+
+  const SelectDocente({required this.docenteId});
+
+  @override
+  List<Object?> get props => [docenteId];
+}

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logger/logger.dart';
 import 'package:uerj_companion/features/docentes/data/docente_repository.dart';
+import 'package:uerj_companion/features/docentes/domain/entities/avaliacao.dart';
 import 'package:uerj_companion/features/docentes/domain/entities/docente.dart';
 
 part 'docentes_event.dart';
@@ -49,5 +50,16 @@ class DocentesBloc extends Bloc<DocentesEvent, DocentesState> {
         emit(DocentesError(e.toString()));
       }
     });
+
+    on<SelectDocente>((event, emit) async {
+      emit(DocentesLoading());
+      try {
+        final docente = await _repository.selectDocente(event.docenteId);
+        emit(DocenteProfileLoaded(docente: docente, avaliacoes: []));
+      } catch (e) {
+        _logger.e(e);
+        emit(DocentesError(e.toString()));
+      }
+    },);
   }
 }

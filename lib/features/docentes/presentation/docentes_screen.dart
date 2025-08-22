@@ -36,7 +36,9 @@ class DocentesScreen extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               sliver: SliverToBoxAdapter(
                 child: TextField(
-                  decoration: const InputDecoration(labelText: "Buscar Docente"),
+                  decoration: const InputDecoration(
+                    labelText: "Buscar Docente",
+                  ),
                 ),
               ),
             ),
@@ -60,22 +62,20 @@ class DocentesScreen extends StatelessWidget {
                 }
 
                 return SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final docente = state.docentes[index];
-                      return ListTile(
-                        title: Text(docente.nome),
-                        subtitle: Text(docente.email),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () => context
-                              .read<DocentesBloc>()
-                              .add(EditDocente(docente: docente)),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final docente = state.docentes[index];
+                    return ListTile(
+                      title: Text(docente.nome),
+                      subtitle: Text(docente.email),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () => context.read<DocentesBloc>().add(
+                          EditDocente(docente: docente),
                         ),
-                      );
-                    },
-                    childCount: state.docentes.length,
-                  ),
+                      ),
+                      onTap: () => context.push('/docente/${docente.id}'),
+                    );
+                  }, childCount: state.docentes.length),
                 );
               },
             ),
