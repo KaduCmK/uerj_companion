@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:uerj_companion/features/docentes/presentation/bloc/avaliacoes/avaliacoes_bloc.dart';
 import 'package:uerj_companion/features/docentes/presentation/bloc/docentes/docentes_bloc.dart';
 import 'package:uerj_companion/features/docentes/presentation/rating_dialog.dart';
 
@@ -28,16 +29,16 @@ class _DocenteProfileScreenState extends State<DocenteProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(automaticallyImplyLeading: true),
-      body: BlocBuilder<DocentesBloc, DocentesState>(
-        builder: (context, state) {
-          if (state is! DocenteProfileLoaded)
-            return const Center(child: CircularProgressIndicator());
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: CustomScrollView(
+          slivers: [
+            BlocBuilder<DocentesBloc, DocentesState>(
+              builder: (context, state) {
+                if (state is! DocenteProfileLoaded)
+                  return const SliverToBoxAdapter();
 
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
+                return SliverToBoxAdapter(
                   child: Card(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -103,34 +104,84 @@ class _DocenteProfileScreenState extends State<DocenteProfileScreen> {
                       ),
                     ),
                   ),
-                ),
-
-                SliverPadding(
-                  padding: EdgeInsetsGeometry.symmetric(vertical: 8),
-                  sliver: SliverToBoxAdapter(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Avaliações:", style: textTheme.titleLarge),
-                        OutlinedButton.icon(
-                          onPressed: () =>
-                              showDialog(
-                                context: context,
-                                builder: (_) => RatingDialog(),
-                              ).then((result) {
-                                print(result);
-                              }),
-                          icon: Icon(Icons.rate_review),
-                          label: const Text("Avaliar Professor"),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+                );
+              },
             ),
-          );
-        },
+
+            SliverPadding(
+              padding: EdgeInsetsGeometry.symmetric(vertical: 8),
+              sliver: SliverToBoxAdapter(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Avaliações:", style: textTheme.titleLarge),
+                    OutlinedButton.icon(
+                      onPressed: () =>
+                          showDialog(
+                            context: context,
+                            builder: (_) => RatingDialog(),
+                          ).then((result) {
+                            if (result != null && context.mounted) {
+                              context.read<AvaliacoesBloc>().add(
+                                AddAvaliacao(
+                                  docenteId: widget.docenteId,
+                                  rating: result['rating'],
+                                  comentario: result['comentario'],
+                                ),
+                              );
+                            }
+                          }),
+                      icon: Icon(Icons.rate_review),
+                      label: const Text("Avaliar Professor"),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            BlocBuilder<AvaliacoesBloc, AvaliacoesState>(
+              builder: (context, state) {
+                if (state is! AvaliacoesLoaded)
+                  return const SliverToBoxAdapter(
+                    child: CircularProgressIndicator(),
+                  );
+
+                if (state.avaliacoes.isEmpty)
+                  return const SliverToBoxAdapter(
+                    child: Center(
+                      child: Text(
+                        "Este professor ainda não foi avaliado. Seja o primeiro a avaliar!",
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+
+                return SliverList.builder(
+                  itemCount: state.avaliacoes.length,
+                  itemBuilder: (context, index) => ListTile(
+                    title: Row(
+                      children: List.generate(
+                        5,
+                        (i) => Icon(
+                          i < state.avaliacoes[index].nota
+                              ? Icons.star
+                              : Icons.star_border,
+                        ),
+                      ),
+                    ),
+                    subtitle: state.avaliacoes[index].comentario != null
+                        ? Text(
+                            state.avaliacoes[index].comentario!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          )
+                        : null,
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
