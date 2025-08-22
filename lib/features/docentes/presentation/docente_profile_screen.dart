@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -108,37 +110,6 @@ class _DocenteProfileScreenState extends State<DocenteProfileScreen> {
               },
             ),
 
-            SliverPadding(
-              padding: EdgeInsetsGeometry.symmetric(vertical: 8),
-              sliver: SliverToBoxAdapter(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Avaliações:", style: textTheme.titleLarge),
-                    OutlinedButton.icon(
-                      onPressed: () =>
-                          showDialog(
-                            context: context,
-                            builder: (_) => RatingDialog(),
-                          ).then((result) {
-                            if (result != null && context.mounted) {
-                              context.read<AvaliacoesBloc>().add(
-                                AddAvaliacao(
-                                  docenteId: widget.docenteId,
-                                  rating: result['rating'],
-                                  comentario: result['comentario'],
-                                ),
-                              );
-                            }
-                          }),
-                      icon: Icon(Icons.rate_review),
-                      label: const Text("Avaliar Professor"),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
             BlocBuilder<AvaliacoesBloc, AvaliacoesState>(
               builder: (context, state) {
                 if (state is! AvaliacoesLoaded)
@@ -156,27 +127,112 @@ class _DocenteProfileScreenState extends State<DocenteProfileScreen> {
                     ),
                   );
 
-                return SliverList.builder(
-                  itemCount: state.avaliacoes.length,
-                  itemBuilder: (context, index) => ListTile(
-                    title: Row(
-                      children: List.generate(
-                        5,
-                        (i) => Icon(
-                          i < state.avaliacoes[index].nota
-                              ? Icons.star
-                              : Icons.star_border,
+                final userId = FirebaseAuth.instance.currentUser?.uid;
+                final minhaAvaliacao = state.avaliacoes.firstWhereOrNull(
+                  (av) => av.userId == userId,
+                );
+                final outrasAvaliacoes = state.avaliacoes
+                    .where((av) => av.userId != userId)
+                    .toList();
+
+                return SliverMainAxisGroup(
+                  slivers: [
+                    SliverPadding(
+                      padding: EdgeInsetsGeometry.symmetric(vertical: 8),
+                      sliver: SliverToBoxAdapter(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              minhaAvaliacao != null
+                                  ? "Sua Avaliação"
+                                  : "Avaliações",
+                              style: textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            if (minhaAvaliacao == null)
+                              OutlinedButton.icon(
+                                onPressed: () =>
+                                    showDialog(
+                                      context: context,
+                                      builder: (_) => RatingDialog(),
+                                    ).then((result) {
+                                      if (result != null && context.mounted) {
+                                        context.read<AvaliacoesBloc>().add(
+                                          AddAvaliacao(
+                                            docenteId: widget.docenteId,
+                                            rating: result['rating'],
+                                            comentario: result['comentario'],
+                                          ),
+                                        );
+                                      }
+                                    }),
+                                icon: Icon(Icons.rate_review),
+                                label: const Text("Avaliar Professor"),
+                              )
+                            else
+                              IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.edit),
+                              ),
+                          ],
                         ),
                       ),
                     ),
-                    subtitle: state.avaliacoes[index].comentario != null
-                        ? Text(
-                            state.avaliacoes[index].comentario!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                        : null,
-                  ),
+
+                    if (minhaAvaliacao != null)
+                      SliverToBoxAdapter(
+                        child: Card(
+                          child: ListTile(
+                            title: Row(
+                              children: List.generate(
+                                5,
+                                (i) => Icon(
+                                  i < minhaAvaliacao.nota
+                                      ? Icons.star
+                                      : Icons.star_border,
+                                ),
+                              ),
+                            ),
+                            subtitle: minhaAvaliacao.comentario != null
+                                ? Text(
+                                    minhaAvaliacao.comentario!,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  )
+                                : null,
+                          ),
+                        ),
+                      ),
+
+                    if (outrasAvaliacoes.isNotEmpty) ...[
+                      Text("Outras Avaliações", style: textTheme.titleMedium),
+                      SliverList.builder(
+                      itemCount: outrasAvaliacoes.length,
+                      itemBuilder: (context, index) => ListTile(
+                        title: Row(
+                          children: List.generate(
+                            5,
+                            (i) => Icon(
+                              i < outrasAvaliacoes[index].nota
+                                  ? Icons.star
+                                  : Icons.star_border,
+                            ),
+                          ),
+                        ),
+                        subtitle: outrasAvaliacoes[index].comentario != null
+                            ? Text(
+                                outrasAvaliacoes[index].comentario!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              )
+                            : null,
+                      ),
+                    ),
+                    ],
+                    
+                  ],
                 );
               },
             ),
