@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uerj_companion/app_theme.dart';
 import 'package:uerj_companion/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:uerj_companion/firebase_options.dart';
-import 'package:uerj_companion/shared/config/app_router.dart';
+import 'package:uerj_companion/shared/router/app_router.dart';
 import 'package:uerj_companion/shared/config/service_locator.dart';
 
 void main() async {

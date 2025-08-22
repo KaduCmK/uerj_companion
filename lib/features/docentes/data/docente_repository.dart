@@ -5,7 +5,7 @@ import 'package:uerj_companion/features/docentes/domain/entities/avaliacao.dart'
 class DocenteRepository {
   final _docentesCollection = FirebaseFirestore.instance.collection('docentes');
 
-  Future<void> addOrUpdateDocente(Docente docente) async {
+  Future<void> upsertDocente(Docente docente) async {
     await _docentesCollection.doc(docente.id).set(docente.toMap(), SetOptions(merge: true));
   }
 

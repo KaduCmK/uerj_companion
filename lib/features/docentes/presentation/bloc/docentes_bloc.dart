@@ -26,5 +26,9 @@ class DocentesBloc extends Bloc<DocentesEvent, DocentesState> {
         emit(DocentesError(e.toString()));
       }
     });
+
+    on<EditDocente>((event, emit) {
+      emit(DocenteEditing(event.docente));
+    });
   }
 }

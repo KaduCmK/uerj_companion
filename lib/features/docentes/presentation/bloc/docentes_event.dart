@@ -8,3 +8,14 @@ sealed class DocentesEvent extends Equatable {
 }
 
 final class GetDocentes extends DocentesEvent {}
+
+final class EditDocente extends DocentesEvent {
+  final Docente docente;
+
+  const EditDocente({required this.docente});
+
+  @override
+  List<Object> get props => [docente];
+}
+
+final class SetDocente extends DocentesEvent {}

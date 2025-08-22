@@ -22,8 +22,6 @@
             "type": "dart",
             "program": "lib/main_dev.dart",
             "args": [
-                "--flavor",
-                "dev",
                 "--web-port",
                 "8080"
             ]
@@ -34,10 +32,7 @@
             "type": "dart",
             "flutterMode": "profile",
             "program": "lib/main_dev.dart",
-            "args": [
-                "--flavor",
-                "dev"
-            ]
+            "args": []
         },
         {
             "name": "release mode (production)",
@@ -45,10 +40,7 @@
             "type": "dart",
             "flutterMode": "release",
             "program": "lib/main_prod.dart",
-            "args": [
-                "--flavor",
-                "prod"
-            ]
+            "args": []
         }
     ]
 }

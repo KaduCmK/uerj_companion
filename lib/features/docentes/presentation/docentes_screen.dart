@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:uerj_companion/features/docentes/presentation/bloc/docentes_bloc.dart';
 
 class DocentesScreen extends StatelessWidget {
@@ -20,7 +21,7 @@ class DocentesScreen extends StatelessWidget {
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.add),
                 label: const Text("Adicionar Docente"),
-                onPressed: () {},
+                onPressed: () => context.push('/edit-docente'),
               ),
             ),
           ),
@@ -35,7 +36,11 @@ class DocentesScreen extends StatelessWidget {
           ),
 
           SliverToBoxAdapter(
-            child: BlocBuilder<DocentesBloc, DocentesState>(
+            child: BlocConsumer<DocentesBloc, DocentesState>(
+              listener: (context, state) {
+                if (state is DocenteEditing)
+                  context.push('/edit-docente', extra: state.docente);
+              },
               builder: (context, state) {
                 if (state is! DocentesLoaded)
                   return const CircularProgressIndicator();

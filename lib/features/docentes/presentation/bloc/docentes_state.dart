@@ -20,6 +20,15 @@ final class DocentesLoaded extends DocentesState {
   List<Object?> get props => [docentes];
 }
 
+final class DocenteEditing extends DocentesState {
+  final Docente docente;
+
+  const DocenteEditing(this.docente);
+
+  @override
+  List<Object?> get props => [docente];
+}
+
 final class DocentesError extends DocentesState {
   final String message;
 
