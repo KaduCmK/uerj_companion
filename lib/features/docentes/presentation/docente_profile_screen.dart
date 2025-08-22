@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uerj_companion/features/docentes/presentation/bloc/docentes_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:uerj_companion/features/docentes/presentation/bloc/docentes/docentes_bloc.dart';
+import 'package:uerj_companion/features/docentes/presentation/rating_dialog.dart';
 
 class DocenteProfileScreen extends StatefulWidget {
   final String docenteId;
@@ -51,13 +53,51 @@ class _DocenteProfileScreenState extends State<DocenteProfileScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Row(mainAxisSize: MainAxisSize.min, children: List.generate(5, (_) => Icon(Icons.star_outline))),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: List.generate(
+                              5,
+                              (_) => Icon(Icons.star_outline),
+                            ),
+                          ),
                           Row(
                             spacing: 4,
                             children: [
                               Icon(Icons.email, size: 16),
                               Text(state.docente.email),
                             ],
+                          ),
+                          const Padding(
+                            padding: EdgeInsetsGeometry.all(8),
+                            child: Divider(),
+                          ),
+                          Row(
+                            spacing: 4,
+                            children: [
+                              SvgPicture.asset(
+                                'sparkle.svg',
+                                semanticsLabel: 'Resumo IA',
+                                colorFilter: ColorFilter.mode(
+                                  Theme.of(context).colorScheme.onSurface,
+                                  BlendMode.srcIn,
+                                ),
+                                width: 24,
+                                height: 24,
+                              ),
+                              Text(
+                                'Resumo gerado por IA:',
+                                style: textTheme.titleMedium,
+                              ),
+                            ],
+                          ),
+                          TextField(
+                            minLines: 5,
+                            maxLines: null,
+                            readOnly: true,
+                            controller: TextEditingController(
+                              text:
+                                  'Ainda não temos avaliações o suficiente para gerar um resumo',
+                            ),
                           ),
                         ],
                       ),
@@ -73,7 +113,13 @@ class _DocenteProfileScreenState extends State<DocenteProfileScreen> {
                       children: [
                         Text("Avaliações:", style: textTheme.titleLarge),
                         OutlinedButton.icon(
-                          onPressed: () {},
+                          onPressed: () =>
+                              showDialog(
+                                context: context,
+                                builder: (_) => RatingDialog(),
+                              ).then((result) {
+                                print(result);
+                              }),
                           icon: Icon(Icons.rate_review),
                           label: const Text("Avaliar Professor"),
                         ),

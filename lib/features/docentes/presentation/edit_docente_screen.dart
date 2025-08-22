@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:uerj_companion/features/docentes/presentation/bloc/docentes_bloc.dart';
+import 'package:uerj_companion/features/docentes/presentation/bloc/docentes/docentes_bloc.dart';
 
 class EditDocenteScreen extends StatefulWidget {
   const EditDocenteScreen({super.key});
