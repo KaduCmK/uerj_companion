@@ -24,14 +24,35 @@ class AvaliacoesBloc extends Bloc<AvaliacoesEvent, AvaliacoesState> {
       emit(AvaliacoesLoading());
       try {
         final avaliacoes = await _repository.getAvaliacoes(event.docenteId);
-        emit(AvaliacoesLoaded(avaliacoes));
+        emit(AvaliacoesLoaded(avaliacoes: avaliacoes));
       } catch (e) {
         _logger.e(e);
         emit(AvaliacoesError(e.toString()));
       }
     });
 
-    on<AddAvaliacao>((event, emit) async {
+    on<EditAvaliacao>((event, emit) {
+      emit(
+        AvaliacaoEditing(
+          avaliacaoToEdit: event.avaliacao,
+          avaliacoes: (state as AvaliacoesDataState).avaliacoes,
+        ),
+      );
+    });
+
+    on<CancelEditing>((event, emit) {
+      emit(
+        AvaliacoesLoaded(avaliacoes: (state as AvaliacoesDataState).avaliacoes),
+      );
+    });
+
+    on<SetAvaliacao>((event, emit) async {
+      if (event.rating == null)
+        emit(
+          AvaliacoesLoaded(
+            avaliacoes: (state as AvaliacoesDataState).avaliacoes,
+          ),
+        );
       emit(AvaliacoesLoading());
       try {
         final user = _firebaseAuth.currentUser;
@@ -42,11 +63,11 @@ class AvaliacoesBloc extends Bloc<AvaliacoesEvent, AvaliacoesState> {
 
         final avaliacao = Avaliacao(
           userId: user.uid,
-          nota: event.rating,
+          nota: event.rating!,
           timestamp: Timestamp.now(),
           comentario: event.comentario,
         );
-        await _repository.addAvaliacao(event.docenteId, avaliacao);
+        await _repository.upsertAvaliacao(event.docenteId, avaliacao);
         add(LoadAvaliacoes(docenteId: event.docenteId));
       } catch (e) {
         _logger.e(e);

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uerj_companion/features/docentes/presentation/bloc/avaliacoes/avaliacoes_bloc.dart';
 
 class RatingDialog extends StatefulWidget {
   const RatingDialog({super.key});
@@ -12,6 +14,14 @@ class _RatingDialogState extends State<RatingDialog> {
   int rating = 0;
   final _comentarioController = TextEditingController();
   String? error;
+
+  @override
+  void initState() {
+    super.initState();
+    final state = context.read<AvaliacoesBloc>().state as AvaliacaoEditing;
+    rating = state.avaliacaoToEdit?.nota ?? 0;
+    _comentarioController.text = state.avaliacaoToEdit?.comentario ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {

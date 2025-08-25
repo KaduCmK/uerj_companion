@@ -6,14 +6,17 @@ class DocenteRepository {
   final _docentesCollection = FirebaseFirestore.instance.collection('docentes');
 
   Future<void> upsertDocente(Docente docente) async {
-    await _docentesCollection.doc(docente.id).set(docente.toMap(), SetOptions(merge: true));
+    await _docentesCollection
+        .doc(docente.id)
+        .set(docente.toMap(), SetOptions(merge: true));
   }
 
-  Future<void> addAvaliacao(String docenteId, Avaliacao avaliacao) async {
+  Future<void> upsertAvaliacao(String docenteId, Avaliacao avaliacao) async {
     await _docentesCollection
         .doc(docenteId)
         .collection('avaliacoes')
-        .add(avaliacao.toMap());
+        .doc(avaliacao.userId)
+        .set(avaliacao.toMap(), SetOptions(merge: true));
   }
 
   Future<List<Docente>> getDocentes() async {

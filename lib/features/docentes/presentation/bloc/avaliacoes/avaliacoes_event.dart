@@ -16,14 +16,25 @@ final class LoadAvaliacoes extends AvaliacoesEvent {
   List<Object?> get props => [docenteId];
 }
 
-final class AddAvaliacao extends AvaliacoesEvent {
+final class EditAvaliacao extends AvaliacoesEvent {
+  final Avaliacao? avaliacao;
+
+  const EditAvaliacao({this.avaliacao});
+
+  @override
+  List<Object?> get props => [avaliacao];
+}
+
+final class CancelEditing extends AvaliacoesEvent {}
+
+final class SetAvaliacao extends AvaliacoesEvent {
   final String docenteId;
-  final int rating;
+  final int? rating;
   final String? comentario;
 
-  const AddAvaliacao({
+  const SetAvaliacao({
     required this.docenteId,
-    required this.rating,
+    this.rating,
     this.comentario,
   });
 
