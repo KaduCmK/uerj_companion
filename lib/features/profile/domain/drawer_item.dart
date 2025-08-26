@@ -21,12 +21,12 @@ class DrawerItem extends Equatable {
 const drawerItems = [
   DrawerItem(icon: Icons.home, title: 'Tela Inicial', route: '/profile'),
   DrawerItem(
-    icon: Icons.book,
+    icon: Icons.school,
     title: 'Cursos e Matérias',
     route: '/info-cursos',
   ),
   DrawerItem(
-    icon: Icons.school_outlined,
+    icon: Icons.co_present,
     title: 'Docentes',
     route: '/docentes',
   ),

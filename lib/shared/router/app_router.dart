@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -7,7 +6,6 @@ import 'package:uerj_companion/features/auth/presentation/validating_screen.dart
 import 'package:uerj_companion/features/auth/presentation/welcome_screen.dart';
 import 'package:uerj_companion/features/cursos/presentation/bloc/curso_bloc.dart';
 import 'package:uerj_companion/features/docentes/presentation/bloc/docentes/docentes_bloc.dart';
-import 'package:uerj_companion/features/home/home_screen.dart';
 import 'package:uerj_companion/features/profile/presentation/profile_page.dart';
 import 'package:uerj_companion/features/profile/presentation/profile_screen.dart';
 import 'package:uerj_companion/shared/config/service_locator.dart';
@@ -19,22 +17,26 @@ import 'package:uerj_companion/shared/router/custom_page_transition.dart';
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final appRouter = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/profile',
   navigatorKey: rootNavigatorKey,
   refreshListenable: GoRouterRefreshStream(sl<AuthBloc>().stream),
   redirect: (context, state) {
-    final user = FirebaseAuth.instance.currentUser;
-    final isLoggedIn = user != null;
+    final authState = sl<AuthBloc>().state;
+    final isLoggedIn = authState is Authenticated;
+    final isAuthenticating = authState is AuthValidatingLink;
 
-    final isAtLogin = state.matchedLocation == '/login';
+    final location = state.matchedLocation;
+    final isAtLogin = location == '/login';
+    final isAtValidating = location == '/validating';
 
-    if (isLoggedIn && isAtLogin) {
+    if (isAuthenticating) return isAtValidating ? null : '/validating';
+
+    if (isLoggedIn && (isAtLogin || isAtValidating)) {
       return '/profile';
     }
     return null;
   },
   routes: [
-    GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
     GoRoute(path: '/login', builder: (context, state) => const WelcomeScreen()),
     GoRoute(
       path: '/validating',
@@ -59,8 +61,10 @@ final appRouter = GoRouter(
       routes: [
         GoRoute(
           path: '/profile',
-          pageBuilder: (context, state) =>
-              CustomPageTransition(key: state.pageKey, child: const ProfilePage()),
+          pageBuilder: (context, state) => CustomPageTransition(
+            key: state.pageKey,
+            child: const ProfilePage(),
+          ),
         ),
         ...cursosRoutes,
         ...docenteRoutes,

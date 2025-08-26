@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uerj_companion/features/auth/data/auth_service.dart';
 import 'package:uerj_companion/features/auth/presentation/bloc/auth_bloc.dart';
@@ -11,5 +12,10 @@ void setupLocator() {
   sl.registerLazySingleton(() => CursosRepository());
   sl.registerLazySingleton(() => DocenteRepository());
 
-  sl.registerLazySingleton(() => AuthBloc(sl<AuthService>()));
+  sl.registerLazySingleton(
+    () => AuthBloc(
+      authService: sl<AuthService>(),
+      firebaseAuth: FirebaseAuth.instance,
+    ),
+  );
 }

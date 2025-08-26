@@ -1,5 +1,7 @@
 {
     "version": "2.0.0",
+    "command": "bash",
+    "args": ["-c"],
     "tasks": [
         {
             "label": "Build Web Production",
@@ -23,6 +25,7 @@
                 "showReuseMessage": true,
                 "clear": false
             }
-        }
+        },
+        
     ]
 }

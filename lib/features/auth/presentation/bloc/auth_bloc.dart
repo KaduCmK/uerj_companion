@@ -1,16 +1,39 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:uerj_companion/features/auth/data/auth_service.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
+  final _logger = Logger();
   final AuthService _authService;
+  final FirebaseAuth _firebaseAuth;
+  late final StreamSubscription<User?> _userSubscription;
 
-  AuthBloc(this._authService) : super(AuthInitial()) {
+  AuthBloc({
+    required AuthService authService,
+    required FirebaseAuth firebaseAuth,
+  }) : _authService = authService,
+       _firebaseAuth = firebaseAuth,
+       super(AuthInitial()) {
+    _userSubscription = _firebaseAuth.authStateChanges().listen((user) {
+      _logger.i("User changed: $user");
+      add(AuthenticationUserChanged(user));
+    });
+
+    on<AuthenticationUserChanged>((event, emit) async {
+      if (event.user != null)
+        emit(Authenticated(event.user!));
+      else
+        emit(Unauthenticated());
+    });
+
     on<SendSignInLink>((event, emit) async {
       emit(AuthLoading());
       try {
@@ -27,7 +50,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         try {
           await _authService.handleSignInLink(event.uri);
-          emit(AuthSuccess());
         } on FirebaseAuthException catch (e) {
           emit(AuthError('Falha no login: ${e.message}'));
         } catch (e) {
@@ -35,5 +57,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       }
     });
+  }
+
+  @override
+  Future<void> close() {
+    _userSubscription.cancel();
+    return super.close();
   }
 }

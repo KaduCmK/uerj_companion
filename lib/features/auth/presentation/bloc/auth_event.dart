@@ -5,10 +5,19 @@ abstract class AuthEvent extends Equatable {
   const AuthEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-class SendSignInLink extends AuthEvent {
+final class AuthenticationUserChanged extends AuthEvent {
+  final User? user;
+
+  const AuthenticationUserChanged(this.user);
+
+  @override
+  List<Object?> get props => [user];
+}
+
+final class SendSignInLink extends AuthEvent {
   final String email;
 
   const SendSignInLink(this.email);
@@ -17,7 +26,7 @@ class SendSignInLink extends AuthEvent {
   List<Object> get props => [email];
 }
 
-class CheckSignInLink extends AuthEvent {
+final class CheckSignInLink extends AuthEvent {
   final Uri uri;
 
   const CheckSignInLink(this.uri);

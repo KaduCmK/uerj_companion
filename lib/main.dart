@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,25 +25,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool _linkChecked = false;
-
   @override
   void initState() {
     super.initState();
-    FirebaseAuth.instance.authStateChanges().listen((user) {
-      appRouter.refresh();
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_linkChecked) {
-      context.read<AuthBloc>().add(
-        CheckSignInLink(Uri.parse(Uri.base.toString())),
-      );
-      _linkChecked = true;
-    }
+    context.read<AuthBloc>().add(
+      CheckSignInLink(Uri.parse(Uri.base.toString())),
+    );
   }
 
   @override
