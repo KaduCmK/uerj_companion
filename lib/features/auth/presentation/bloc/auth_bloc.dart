@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:uerj_companion/features/auth/data/auth_service.dart';
-import 'package:uerj_companion/shared/router/app_router.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -47,18 +46,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<CheckSignInLink>((event, emit) async {
       if (_authService.isSignInLink(event.uri.toString())) {
-        emit(AuthValidatingLink());
-        appRouter.refresh();
+        if (_firebaseAuth.currentUser != null) {
+          _logger.i('Usuario já autenticado, ignorando o link de login');
 
+          if (state is Authenticated)
+            emit(Authenticated(_firebaseAuth.currentUser!));
+          return;
+        }
+
+        emit(AuthValidatingLink());
         try {
           await _authService.handleSignInLink(event.uri);
         } on FirebaseAuthException catch (e) {
-          _logger.w('Falha em CheckSignInLink', error: e);
-          if (_firebaseAuth.currentUser != null) {
-            emit(Authenticated(_firebaseAuth.currentUser!));
-          } else {
-            emit(AuthError('Falha no login: ${e.message}'));
-          }
+          _logger.e('Falha em CheckSignInLink', error: e);
+          emit(AuthError('Falha no login: ${e.message}'));
+          emit(Unauthenticated());
         } catch (e) {
           _logger.e(e);
           emit(AuthError(e.toString()));
