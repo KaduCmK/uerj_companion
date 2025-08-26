@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:uerj_companion/features/auth/data/auth_service.dart';
+import 'package:uerj_companion/shared/router/app_router.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -47,6 +48,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<CheckSignInLink>((event, emit) async {
       if (_authService.isSignInLink(event.uri.toString())) {
         emit(AuthValidatingLink());
+        appRouter.refresh();
 
         try {
           await _authService.handleSignInLink(event.uri);
