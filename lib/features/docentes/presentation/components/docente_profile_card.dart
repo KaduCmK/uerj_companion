@@ -32,29 +32,36 @@ class DocenteProfileCard extends StatelessWidget {
               ],
             ),
             const Padding(padding: EdgeInsetsGeometry.all(8), child: Divider()),
-            Row(
-              spacing: 4,
-              children: [
-                SvgPicture.asset(
-                  'sparkle.svg',
-                  semanticsLabel: 'Resumo IA',
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).colorScheme.onSurface,
-                    BlendMode.srcIn,
-                  ),
-                  width: 24,
-                  height: 24,
+            Card.outlined(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Row(
+                      spacing: 4,
+                      children: [
+                        SvgPicture.asset(
+                          'sparkle.svg',
+                          semanticsLabel: 'Resumo IA',
+                          colorFilter: ColorFilter.mode(
+                            Theme.of(context).colorScheme.onSurface,
+                            BlendMode.srcIn,
+                          ),
+                          width: 24,
+                          height: 24,
+                        ),
+                        Text(
+                          'Resumo gerado por IA:',
+                          style: textTheme.titleMedium,
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(state.docente.resumoIA ?? 'Nenhum resumo gerado'),
+                    ),
+                  ],
                 ),
-                Text('Resumo gerado por IA:', style: textTheme.titleMedium),
-              ],
-            ),
-            TextField(
-              minLines: 5,
-              maxLines: null,
-              readOnly: true,
-              controller: TextEditingController(
-                text:
-                    'Ainda não temos avaliações o suficiente para gerar um resumo',
               ),
             ),
           ],
