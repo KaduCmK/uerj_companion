@@ -53,8 +53,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         try {
           await _authService.handleSignInLink(event.uri);
         } on FirebaseAuthException catch (e) {
-          emit(AuthError('Falha no login: ${e.message}'));
+          _logger.w('Falha em CheckSignInLink', error: e);
+          if (_firebaseAuth.currentUser != null) {
+            emit(Authenticated(_firebaseAuth.currentUser!));
+          } else {
+            emit(AuthError('Falha no login: ${e.message}'));
+          }
         } catch (e) {
+          _logger.e(e);
           emit(AuthError(e.toString()));
         }
       }
