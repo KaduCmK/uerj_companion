@@ -24,9 +24,16 @@ class HomeScreen extends StatelessWidget {
               onPressed: () => context.push('/login'),
               child: const Text("Entre com seu email universitário"),
             ),
-            SizedBox(height: 16,),
-            Text("Acesso rápido:", style: textTheme.titleMedium,),
-            OutlinedButton(onPressed: () => context.push('/info-cursos'), child: Text("Informações de cursos"))
+            SizedBox(height: 16),
+            Text("Acesso rápido:", style: textTheme.titleMedium),
+            OutlinedButton(
+              onPressed: () => context.push('/info-cursos'),
+              child: Text("Informações de cursos"),
+            ),
+            OutlinedButton(
+              onPressed: () => context.push('/docentes'),
+              child: Text("Informações de docentes"),
+            ),
           ],
         ),
       ),

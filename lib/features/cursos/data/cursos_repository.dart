@@ -3,7 +3,6 @@ import 'package:uerj_companion/features/cursos/domain/entities/curso.dart';
 import 'package:uerj_companion/features/cursos/domain/entities/materia.dart';
 
 class CursosRepository {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final _cursosCollection = FirebaseFirestore.instance.collection('cursos');
 
   Future<List<Curso>> getCursos() async {
