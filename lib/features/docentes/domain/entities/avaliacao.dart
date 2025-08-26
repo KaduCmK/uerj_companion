@@ -5,14 +5,14 @@ class Avaliacao extends Equatable {
   final String? id;
   final int nota;
   final String? comentario;
-  final String userId;
+  final String? userId;
   final Timestamp timestamp;
 
   const Avaliacao({
     this.id,
     required this.nota,
     this.comentario,
-    required this.userId,
+    this.userId,
     required this.timestamp,
   });
 

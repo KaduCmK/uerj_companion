@@ -71,7 +71,12 @@ class DocenteAvaliacoesSliver extends StatelessWidget {
           ),
 
         if (outrasAvaliacoes.isNotEmpty) ...[
-          Text("Outras Avaliações", style: textTheme.titleMedium),
+          SliverPadding(
+            padding: const EdgeInsets.only(top: 8),
+            sliver: SliverToBoxAdapter(
+              child: Text("Outras Avaliações", style: textTheme.titleMedium),
+            ),
+          ),
           SliverList.builder(
             itemCount: outrasAvaliacoes.length,
             itemBuilder: (context, index) => ListTile(
@@ -84,7 +89,7 @@ class DocenteAvaliacoesSliver extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     )
-                  : null,
+                  : null
             ),
           ),
         ],

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:uerj_companion/features/docentes/presentation/bloc/docentes/docentes_bloc.dart';
 import 'package:uerj_companion/features/docentes/presentation/components/docente_rating.dart';
+import 'package:uerj_companion/shared/components/typewriter_fade_text.dart';
 
 class DocenteProfileCard extends StatelessWidget {
   final DocenteProfileLoaded state;
@@ -17,6 +19,12 @@ class DocenteProfileCard extends StatelessWidget {
         child: Column(
           spacing: 4,
           children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: BackButton(
+                onPressed: () => context.read<DocentesBloc>().add(GetDocentes()),
+              ),
+            ),
             Text(
               state.docente.nome,
               style: textTheme.headlineMedium?.copyWith(
@@ -36,6 +44,7 @@ class DocenteProfileCard extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       spacing: 4,
@@ -58,7 +67,9 @@ class DocenteProfileCard extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Text(state.docente.resumoIA ?? 'Nenhum resumo gerado'),
+                      child: TypewriterFadeText(
+                        text: state.docente.resumoIA ?? 'Nenhum resumo gerado',
+                      ),
                     ),
                   ],
                 ),

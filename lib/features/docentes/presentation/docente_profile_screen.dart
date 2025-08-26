@@ -28,11 +28,6 @@ class _DocenteProfileScreenState extends State<DocenteProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: BackButton(
-          onPressed: () => context.read<DocentesBloc>().add(GetDocentes()),
-        ),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: CustomScrollView(
