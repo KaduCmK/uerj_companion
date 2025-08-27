@@ -22,7 +22,8 @@ class DocenteProfileCard extends StatelessWidget {
             Align(
               alignment: Alignment.topLeft,
               child: BackButton(
-                onPressed: () => context.read<DocentesBloc>().add(GetDocentes()),
+                onPressed: () =>
+                    context.read<DocentesBloc>().add(GetDocentes()),
               ),
             ),
             Text(
