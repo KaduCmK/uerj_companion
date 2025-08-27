@@ -1,0 +1,101 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:uerj_companion/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:uerj_companion/features/home/domain/drawer_item.dart';
+
+class MainScreen extends StatelessWidget {
+  final Widget content;
+  const MainScreen({super.key, required this.content});
+
+  @override
+  Widget build(BuildContext context) {
+    final currentLocation = GoRouterState.of(context).uri.toString();
+
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthValidatingLink) context.go('/validating');
+      },
+      builder: (context, state) {
+        final isAuthenticated = state is Authenticated;
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Uerjiano'),
+            actions: [
+              if (isAuthenticated)
+                IconButton(
+                  icon: const CircleAvatar(child: Icon(Icons.person)),
+                  onPressed: () {
+                    if (!(currentLocation== "/")) {
+                      context.push('/');
+                    }
+                  },
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: FilledButton(
+                    onPressed: () => context.push('/login'),
+                    child: const Text('Login'),
+                  ),
+                ),
+            ],
+          ),
+          drawer: Drawer(
+            child: ListView(
+              padding: const EdgeInsets.all(4),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 8,
+                  ),
+                  child: Text(
+                    'Uerjiano',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                ),
+                isAuthenticated
+                    ? OutlinedButton.icon(
+                        onPressed: () {
+                          context.pop();
+                          if (!(currentLocation == "/")) {
+                            context.push('/');
+                          }
+                        },
+                        icon: const Icon(Icons.person),
+                        label: const Text('Seu Perfil'),
+                      )
+                    : ElevatedButton.icon(
+                        onPressed: () {
+                          context.pop();
+                          context.push('/login');
+                        },
+                        icon: const Icon(Icons.login),
+                        label: const Text('Fazer Login'),
+                      ),
+                const Divider(height: 16),
+                ...drawerItems.map((item) {
+                  final selected = currentLocation == item.route;
+
+                  return ListTile(
+                    leading: Icon(item.icon),
+                    title: Text(item.title),
+                    selected: selected,
+                    onTap: () {
+                      context.pop();
+                      if (!selected) {
+                        context.go(item.route);
+                      }
+                    },
+                  );
+                }),
+              ],
+            ),
+          ),
+          body: content,
+        );
+      },
+    );
+  }
+}

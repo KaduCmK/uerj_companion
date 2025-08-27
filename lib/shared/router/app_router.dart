@@ -5,8 +5,8 @@ import 'package:uerj_companion/features/auth/presentation/validating_screen.dart
 import 'package:uerj_companion/features/auth/presentation/welcome_screen.dart';
 import 'package:uerj_companion/features/cursos/presentation/bloc/curso_bloc.dart';
 import 'package:uerj_companion/features/docentes/presentation/bloc/docentes/docentes_bloc.dart';
-import 'package:uerj_companion/features/profile/presentation/profile_page.dart';
-import 'package:uerj_companion/features/profile/presentation/profile_screen.dart';
+import 'package:uerj_companion/features/home/presentation/home_page.dart';
+import 'package:uerj_companion/features/home/presentation/main_screen.dart';
 import 'package:uerj_companion/shared/config/service_locator.dart';
 import 'package:uerj_companion/shared/router/cursos_routes.dart';
 import 'package:uerj_companion/shared/router/docente_routes.dart';
@@ -15,7 +15,7 @@ import 'package:uerj_companion/shared/router/custom_page_transition.dart';
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final appRouter = GoRouter(
-  initialLocation: '/profile',
+  initialLocation: '/',
   navigatorKey: rootNavigatorKey,
   routes: [
     GoRoute(path: '/login', builder: (context, state) => const WelcomeScreen()),
@@ -36,16 +36,14 @@ final appRouter = GoRouter(
                   CursoBloc(cursosRepository: sl())..add(LoadCursos()),
             ),
           ],
-          child: ProfileScreen(content: child),
+          child: MainScreen(content: child),
         );
       },
       routes: [
         GoRoute(
-          path: '/profile',
-          pageBuilder: (context, state) => CustomPageTransition(
-            key: state.pageKey,
-            child: const ProfilePage(),
-          ),
+          path: '/',
+          pageBuilder: (context, state) =>
+              CustomPageTransition(key: state.pageKey, child: const HomePage()),
         ),
         ...cursosRoutes,
         ...docenteRoutes,

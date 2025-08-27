@@ -49,17 +49,18 @@ class DocenteAvaliacoesSliver extends StatelessWidget {
                         if (isAuthenticated)
                           if (minhaAvaliacao == null)
                             OutlinedButton.icon(
-                              onPressed: () => context.read<AvaliacoesBloc>().add(
-                                EditAvaliacao(),
-                              ),
+                              onPressed: () => context
+                                  .read<AvaliacoesBloc>()
+                                  .add(EditAvaliacao()),
                               icon: Icon(Icons.rate_review),
                               label: const Text("Avaliar Professor"),
                             )
                           else
                             IconButton(
-                              onPressed: () => context.read<AvaliacoesBloc>().add(
-                                EditAvaliacao(avaliacao: minhaAvaliacao),
-                              ),
+                              onPressed: () =>
+                                  context.read<AvaliacoesBloc>().add(
+                                    EditAvaliacao(avaliacao: minhaAvaliacao),
+                                  ),
                               icon: Icon(Icons.edit),
                             ),
                       ],
@@ -79,6 +80,7 @@ class DocenteAvaliacoesSliver extends StatelessWidget {
           ),
         ),
 
+        // Caso usuario ja tenha uma avaliacao, ela aparece separada
         if (minhaAvaliacao != null)
           SliverToBoxAdapter(
             child: Card(
@@ -95,6 +97,7 @@ class DocenteAvaliacoesSliver extends StatelessWidget {
             ),
           ),
 
+        // Outras avaliacoes do professor
         if (outrasAvaliacoes.isNotEmpty) ...[
           SliverPadding(
             padding: const EdgeInsets.only(top: 8),

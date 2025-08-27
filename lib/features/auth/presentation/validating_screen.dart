@@ -12,7 +12,7 @@ class ValidatingScreen extends StatelessWidget {
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is Authenticated) {
-            context.go('/profile');
+            context.go('/');
           }
         },
         child: Center(
