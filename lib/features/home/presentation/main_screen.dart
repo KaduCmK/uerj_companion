@@ -59,8 +59,8 @@ class MainScreen extends StatelessWidget {
                     ? OutlinedButton.icon(
                         onPressed: () {
                           context.pop();
-                          if (!(currentLocation == "/")) {
-                            context.push('/');
+                          if (!(currentLocation == "/profile")) {
+                            context.push('/profile');
                           }
                         },
                         icon: const Icon(Icons.person),

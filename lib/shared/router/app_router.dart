@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +8,8 @@ import 'package:uerj_companion/features/cursos/presentation/bloc/curso_bloc.dart
 import 'package:uerj_companion/features/docentes/presentation/bloc/docentes/docentes_bloc.dart';
 import 'package:uerj_companion/features/home/presentation/home_page.dart';
 import 'package:uerj_companion/features/home/presentation/main_screen.dart';
+import 'package:uerj_companion/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:uerj_companion/features/profile/presentation/profile_screen.dart';
 import 'package:uerj_companion/shared/config/service_locator.dart';
 import 'package:uerj_companion/shared/router/cursos_routes.dart';
 import 'package:uerj_companion/shared/router/docente_routes.dart';
@@ -44,6 +47,19 @@ final appRouter = GoRouter(
           path: '/',
           pageBuilder: (context, state) =>
               CustomPageTransition(key: state.pageKey, child: const HomePage()),
+        ),
+        GoRoute(
+          path: '/profile',
+          pageBuilder: (context, state) => CustomPageTransition(
+            key: state.pageKey,
+            child: BlocProvider(
+              create: (context) => ProfileBloc(
+                userRepository: sl(),
+                firebaseAuth: FirebaseAuth.instance,
+              )..add(LoadUserProfile()),
+              child: const ProfileScreen(),
+            ),
+          ),
         ),
         ...cursosRoutes,
         ...docenteRoutes,
