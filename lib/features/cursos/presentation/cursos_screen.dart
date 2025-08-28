@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uerj_companion/features/cursos/presentation/bloc/curso_bloc.dart';
+import 'package:uerj_companion/features/cursos/presentation/materia_screen.dart';
 
 class CursosScreen extends StatelessWidget {
   const CursosScreen({super.key});
@@ -89,6 +90,11 @@ class CursosScreen extends StatelessWidget {
                       subtitle: materia.codigo != null
                           ? Text(materia.codigo!)
                           : null,
+                      onTap: () => showModalBottomSheet(
+                        context: context,
+                        showDragHandle: true,                        
+                        builder: (_) => MateriaScreen(materia: materia),
+                      ),
                     );
                   },
                 ),

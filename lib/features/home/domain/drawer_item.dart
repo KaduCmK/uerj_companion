@@ -30,4 +30,5 @@ const drawerItems = [
     title: 'Docentes',
     route: '/docentes',
   ),
+  DrawerItem(icon: Icons.question_mark, title: 'Sobre', route: '/about')
 ];

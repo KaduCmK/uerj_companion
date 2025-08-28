@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uerj_companion/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:uerj_companion/features/docentes/presentation/bloc/avaliacoes/avaliacoes_bloc.dart';
 import 'package:uerj_companion/features/docentes/presentation/components/avaliacao_card.dart';
-import 'package:uerj_companion/features/docentes/presentation/components/docente_rating.dart';
 
 class DocenteAvaliacoesSliver extends StatelessWidget {
   final AvaliacoesDataState state;

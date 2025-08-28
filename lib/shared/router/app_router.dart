@@ -7,6 +7,7 @@ import 'package:uerj_companion/features/cursos/presentation/bloc/curso_bloc.dart
 import 'package:uerj_companion/features/docentes/presentation/bloc/docentes/docentes_bloc.dart';
 import 'package:uerj_companion/features/home/presentation/home_page.dart';
 import 'package:uerj_companion/features/home/presentation/main_screen.dart';
+import 'package:uerj_companion/features/sobre/presentation/about_screen.dart';
 import 'package:uerj_companion/shared/config/service_locator.dart';
 import 'package:uerj_companion/shared/router/cursos_routes.dart';
 import 'package:uerj_companion/shared/router/docente_routes.dart';
@@ -47,6 +48,11 @@ final appRouter = GoRouter(
         ),
         ...cursosRoutes,
         ...docenteRoutes,
+        GoRoute(
+          path: '/about',
+          pageBuilder: (context, state) =>
+              CustomPageTransition(key: state.pageKey, child: AboutScreen()),
+        ),
       ],
     ),
   ],
