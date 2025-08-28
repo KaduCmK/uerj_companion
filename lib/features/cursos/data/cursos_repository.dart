@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logger/logger.dart';
 import 'package:uerj_companion/features/cursos/domain/entities/curso.dart';
 import 'package:uerj_companion/features/cursos/domain/entities/materia.dart';
 
 class CursosRepository {
+  final _logger = Logger();
   final _cursosCollection = FirebaseFirestore.instance.collection('cursos');
 
   Future<List<Curso>> getCursos() async {
@@ -14,9 +16,12 @@ class CursosRepository {
     final snapshot = await _cursosCollection
         .doc(cursoId)
         .collection('materias')
-        .orderBy('nome')
+        .orderBy('name')
         .get();
-    return snapshot.docs.map((doc) => Materia.fromFirestore(doc)).toList();
+    final materias = snapshot.docs.map((doc) => Materia.fromFirestore(doc)).toList();
+    _logger.i(materias);
+
+    return materias;
   }
 
   Future<void> saveCurso(Curso curso, List<Materia> materias) async {

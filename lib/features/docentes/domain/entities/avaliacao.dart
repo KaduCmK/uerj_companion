@@ -3,39 +3,39 @@ import 'package:equatable/equatable.dart';
 
 class Avaliacao extends Equatable {
   final String? id;
-  final int nota;
-  final String? comentario;
+  final int rating;
+  final String? text;
   final String? userId;
-  final Timestamp timestamp;
+  final Timestamp createdAt;
 
   const Avaliacao({
     this.id,
-    required this.nota,
-    this.comentario,
+    required this.rating,
+    this.text,
     this.userId,
-    required this.timestamp,
+    required this.createdAt,
   });
 
   @override
-  List<Object?> get props => [id, nota, comentario, userId, timestamp];
+  List<Object?> get props => [id, rating, text, userId, createdAt];
 
   factory Avaliacao.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Avaliacao(
       id: doc.id,
-      nota: data['nota'],
-      comentario: data['comentario'],
+      rating: data['rating'],
+      text: data['text'],
       userId: data['userId'],
-      timestamp: data['timestamp'],
+      createdAt: data['created_at'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'nota': nota,
-      'comentario': comentario,
+      'rating': rating,
+      'text': text,
       'userId': userId,
-      'timestamp': timestamp,
+      'created_at': createdAt,
     };
   }
 }

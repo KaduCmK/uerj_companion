@@ -5,16 +5,18 @@ import 'package:equatable/equatable.dart';
 class Docente extends Equatable {
   final String? id;
   final String nome;
-  final String email;
+  final String? email;
   final double mediaAvaliacoes;
   final String? resumoIA;
+  final Timestamp? ultimaEdicaoIA;
 
   const Docente({
     this.id,
     required this.nome,
-    required this.email,
+    this.email,
     this.mediaAvaliacoes = 0.0,
     this.resumoIA,
+    this.ultimaEdicaoIA,
   });
 
   @override
@@ -28,6 +30,7 @@ class Docente extends Equatable {
       email: data['email'],
       mediaAvaliacoes: (data['mediaAvaliacoes'] as num).toDouble(),
       resumoIA: data['resumoIA'],
+      ultimaEdicaoIA: data['ultimaEdicaoIA'],
     );
   }
 
@@ -37,6 +40,7 @@ class Docente extends Equatable {
       'email': email,
       'mediaAvaliacoes': mediaAvaliacoes,
       'resumoIA': resumoIA,
+      'ultimaEdicaoIA': ultimaEdicaoIA,
     };
   }
 
@@ -46,6 +50,7 @@ class Docente extends Equatable {
     String? email,
     double? mediaAvaliacoes,
     String? resumoIA,
+    Timestamp? ultimaEdicaoIA,
   }) {
     return Docente(
       id: id ?? this.id,
@@ -53,6 +58,7 @@ class Docente extends Equatable {
       email: email ?? this.email,
       mediaAvaliacoes: mediaAvaliacoes ?? this.mediaAvaliacoes,
       resumoIA: resumoIA ?? this.resumoIA,
+      ultimaEdicaoIA: this.ultimaEdicaoIA,
     );
   }
 }

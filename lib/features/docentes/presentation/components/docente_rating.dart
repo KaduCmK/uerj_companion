@@ -11,7 +11,7 @@ class DocenteRating extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: List.generate(
         5,
-        (i) => Icon(rating > i ? Icons.star : Icons.star_border),
+        (i) => Icon(rating.floor() > i ? Icons.star : Icons.star_border),
       ),
     );
   }

@@ -44,14 +44,14 @@ class CursosScreen extends StatelessWidget {
                             items: state.cursos.map((curso) {
                               return DropdownMenuItem<String>(
                                 value: curso.id,
-                                child: Text(curso.nome),
+                                child: Text(curso.name),
                               );
                             }).toList(),
                             onChanged: (value) {
                               if (value != null) {
-                                context
-                                    .read<CursoBloc>()
-                                    .add(SelectCurso(value));
+                                context.read<CursoBloc>().add(
+                                  SelectCurso(value),
+                                );
                               }
                             },
                           ),
@@ -61,7 +61,8 @@ class CursosScreen extends StatelessWidget {
                             icon: const Icon(Icons.edit),
                             onPressed: () {
                               final curso = state.cursos.firstWhere(
-                                  (c) => c.id == state.selectedCursoId);
+                                (c) => c.id == state.selectedCursoId,
+                              );
                               context.push('/edit-curso', extra: curso);
                             },
                           ),
@@ -74,7 +75,8 @@ class CursosScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: TextField(
                       decoration: const InputDecoration(
-                          hintText: "Pesquisar matérias"),
+                        hintText: "Pesquisar matérias",
+                      ),
                     ),
                   ),
                 ),
@@ -83,8 +85,10 @@ class CursosScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final materia = state.materias[index];
                     return ListTile(
-                      title: Text(materia.nome),
-                      subtitle: Text(materia.codigo!),
+                      title: Text(materia.name ?? 'Matéria sem nome'),
+                      subtitle: materia.codigo != null
+                          ? Text(materia.codigo!)
+                          : null,
                     );
                   },
                 ),

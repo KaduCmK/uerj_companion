@@ -66,7 +66,7 @@ class DocentesScreen extends StatelessWidget {
                     final docente = state.docentes[index];
                     return ListTile(
                       title: Text(docente.nome),
-                      subtitle: Text(docente.email),
+                      subtitle: Text(docente.email ?? "Sem email cadastrado"),
                       trailing: IconButton(
                         icon: const Icon(Icons.edit),
                         onPressed: () => context.read<DocentesBloc>().add(

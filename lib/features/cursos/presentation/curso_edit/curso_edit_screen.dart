@@ -103,7 +103,7 @@ class _CursoEditScreenState extends State<CursoEditScreen> {
                           itemBuilder: (context, index) {
                             final materia = state.materias[index];
                             return ListTile(
-                              title: Text(materia.nome),
+                              title: Text(materia.name ?? ''),
                               subtitle: Text(materia.codigo!),
                               trailing: IconButton(
                                 icon: const Icon(Icons.delete),
@@ -116,7 +116,7 @@ class _CursoEditScreenState extends State<CursoEditScreen> {
                                     ..showSnackBar(
                                       SnackBar(
                                         content: Text(
-                                          '${materia.nome} foi removida.',
+                                          '${materia.name} foi removida.',
                                         ),
                                       ),
                                     );

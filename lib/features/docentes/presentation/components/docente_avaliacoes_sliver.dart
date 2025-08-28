@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uerj_companion/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:uerj_companion/features/docentes/presentation/bloc/avaliacoes/avaliacoes_bloc.dart';
+import 'package:uerj_companion/features/docentes/presentation/components/avaliacao_card.dart';
 import 'package:uerj_companion/features/docentes/presentation/components/docente_rating.dart';
 
 class DocenteAvaliacoesSliver extends StatelessWidget {
@@ -14,13 +15,17 @@ class DocenteAvaliacoesSliver extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    final userId = FirebaseAuth.instance.currentUser?.uid;
+    // userId precisa existir ou ser vazio.
+    //se o usuario nao estiver logado (userId == null) e review nao possuir userId, ele achará que existe um review do usuario
+    final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
     final minhaAvaliacao = state.avaliacoes.firstWhereOrNull(
       (av) => av.userId == userId,
     );
     final outrasAvaliacoes = state.avaliacoes
         .where((av) => av.userId != userId)
         .toList();
+
+    print(minhaAvaliacao);
 
     return SliverMainAxisGroup(
       slivers: [
@@ -82,20 +87,7 @@ class DocenteAvaliacoesSliver extends StatelessWidget {
 
         // Caso usuario ja tenha uma avaliacao, ela aparece separada
         if (minhaAvaliacao != null)
-          SliverToBoxAdapter(
-            child: Card(
-              child: ListTile(
-                title: DocenteRating(rating: minhaAvaliacao.nota.toDouble()),
-                subtitle: minhaAvaliacao.comentario != null
-                    ? Text(
-                        minhaAvaliacao.comentario!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      )
-                    : null,
-              ),
-            ),
-          ),
+          SliverToBoxAdapter(child: AvaliacaoCard(avaliacao: minhaAvaliacao)),
 
         // Outras avaliacoes do professor
         if (outrasAvaliacoes.isNotEmpty) ...[
@@ -107,18 +99,8 @@ class DocenteAvaliacoesSliver extends StatelessWidget {
           ),
           SliverList.builder(
             itemCount: outrasAvaliacoes.length,
-            itemBuilder: (context, index) => ListTile(
-              title: DocenteRating(
-                rating: outrasAvaliacoes[index].nota.toDouble(),
-              ),
-              subtitle: outrasAvaliacoes[index].comentario != null
-                  ? Text(
-                      outrasAvaliacoes[index].comentario!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    )
-                  : null,
-            ),
+            itemBuilder: (context, index) =>
+                AvaliacaoCard(avaliacao: outrasAvaliacoes[index]),
           ),
         ],
       ],

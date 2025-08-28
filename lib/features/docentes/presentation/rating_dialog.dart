@@ -19,8 +19,8 @@ class _RatingDialogState extends State<RatingDialog> {
   void initState() {
     super.initState();
     final state = context.read<AvaliacoesBloc>().state as AvaliacaoEditing;
-    rating = state.avaliacaoToEdit?.nota ?? 0;
-    _comentarioController.text = state.avaliacaoToEdit?.comentario ?? '';
+    rating = state.avaliacaoToEdit?.rating ?? 0;
+    _comentarioController.text = state.avaliacaoToEdit?.text ?? '';
   }
 
   @override

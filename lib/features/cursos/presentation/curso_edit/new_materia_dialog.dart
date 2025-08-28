@@ -47,7 +47,7 @@ class _NewMateriaDialogState extends State<NewMateriaDialog> {
           onPressed: () {
             if (formKey.currentState!.validate()) {
               final materia = Materia(
-                nome: nomeController.text,
+                name: nomeController.text,
                 codigo: codigoController.text,
               );
               context.read<CursoEditBloc>().add(AddMateria(materia));

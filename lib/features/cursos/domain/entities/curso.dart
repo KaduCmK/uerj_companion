@@ -3,38 +3,38 @@ import 'package:equatable/equatable.dart';
 
 class Curso extends Equatable {
   final String? id;
-  final String nome;
+  final String name;
   
   const Curso({
     this.id,
-    required this.nome,
+    required this.name,
   });
 
   @override
-  List<Object?> get props => [id, nome];
+  List<Object?> get props => [id, name];
 
   factory Curso.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
 
     return Curso(
       id: doc.id,
-      nome: data['nome'],
+      name: data['name'] ?? data['nome'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'nome': nome,
+      'name': name,
     };
   }
 
   Curso copyWith({
     String? id,
-    String? nome,
+    String? name,
   }) {
     return Curso(
       id: id ?? this.id,
-      nome: nome ?? this.nome,
+      name: name ?? this.name,
     );
   }
 }

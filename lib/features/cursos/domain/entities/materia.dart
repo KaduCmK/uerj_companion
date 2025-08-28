@@ -3,25 +3,21 @@ import 'package:equatable/equatable.dart';
 
 class Materia extends Equatable {
   final String? id;
-  final String nome;
+  final String? name;
   final String? codigo;
 
-  const Materia({this.id, required this.nome, this.codigo});
+  const Materia({this.id, this.name, this.codigo});
 
   @override
-  List<Object?> get props => [id, nome, codigo];
+  List<Object?> get props => [id, name, codigo];
 
   factory Materia.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
 
-    return Materia(
-      id: doc.id,
-      nome: data['nome'] ?? "Sem nome",
-      codigo: data['codigo'],
-    );
+    return Materia(id: doc.id, name: data['name'], codigo: data['codigo']);
   }
 
   Map<String, dynamic> toMap() {
-    return {'nome': nome, 'codigo': codigo};
+    return {'name': name, 'codigo': codigo};
   }
 }

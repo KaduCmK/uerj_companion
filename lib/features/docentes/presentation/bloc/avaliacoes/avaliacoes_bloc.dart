@@ -63,9 +63,9 @@ class AvaliacoesBloc extends Bloc<AvaliacoesEvent, AvaliacoesState> {
 
         final avaliacao = Avaliacao(
           userId: user.uid,
-          nota: event.rating!,
-          timestamp: Timestamp.now(),
-          comentario: event.comentario,
+          rating: event.rating!,
+          createdAt: Timestamp.now(),
+          text: event.comentario,
         );
         await _repository.upsertAvaliacao(event.docenteId, avaliacao);
         add(LoadAvaliacoes(docenteId: event.docenteId));

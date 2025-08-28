@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logger/logger.dart';
 import 'package:uerj_companion/features/docentes/domain/entities/docente.dart';
 import 'package:uerj_companion/features/docentes/domain/entities/avaliacao.dart';
 
 class DocenteRepository {
+  final _logger = Logger();
   final _docentesCollection = FirebaseFirestore.instance.collection('docentes');
 
   Future<void> upsertDocente(Docente docente) async {
@@ -33,8 +35,9 @@ class DocenteRepository {
     final snapshot = await _docentesCollection
         .doc(docenteId)
         .collection('avaliacoes')
-        .orderBy('timestamp', descending: true)
+        .orderBy('created_at', descending: true)
         .get();
-    return snapshot.docs.map((doc) => Avaliacao.fromFirestore(doc)).toList();
+    final avaliacoes = snapshot.docs.map((doc) => Avaliacao.fromFirestore(doc)).toList();
+    return avaliacoes;
   }
 }

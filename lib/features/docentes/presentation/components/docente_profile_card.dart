@@ -37,7 +37,7 @@ class DocenteProfileCard extends StatelessWidget {
               spacing: 4,
               children: [
                 Icon(Icons.email, size: 16),
-                Text(state.docente.email),
+                Text(state.docente.email ?? 'Nenhum email cadastrado'),
               ],
             ),
             const Padding(padding: EdgeInsetsGeometry.all(8), child: Divider()),
