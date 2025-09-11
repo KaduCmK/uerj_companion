@@ -41,6 +41,12 @@ service cloud.firestore {
       }
     }
 
-    allow read, write: if request.time < timestamp.date(2025, 9, 18);
+    match /cursos/{documentId=**} {
+      allow read: if request.auth != null;
+    }
+    
+    match /docentes/{documentId=**} {
+    allow read: if request.auth != null;
+    }
   }
 }
