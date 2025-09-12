@@ -4,6 +4,7 @@ import 'package:uerj_companion/features/auth/data/auth_service.dart';
 import 'package:uerj_companion/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:uerj_companion/features/cursos/data/cursos_repository.dart';
 import 'package:uerj_companion/features/docentes/data/docente_repository.dart';
+import 'package:uerj_companion/features/profile/data/user_repository.dart';
 import 'package:uerj_companion/features/turmas/data/turmas_repository.dart';
 import 'package:uerj_companion/features/profile/data/user_repository.dart';
 
