@@ -5,6 +5,7 @@ import 'package:uerj_companion/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:uerj_companion/features/cursos/data/cursos_repository.dart';
 import 'package:uerj_companion/features/docentes/data/docente_repository.dart';
 import 'package:uerj_companion/features/turmas/data/turmas_repository.dart';
+import 'package:uerj_companion/features/profile/data/user_repository.dart';
 
 final sl = GetIt.instance;
 
@@ -13,6 +14,7 @@ void setupLocator() {
   sl.registerLazySingleton<CursosRepository>(() => CursosRepository());
   sl.registerLazySingleton<DocenteRepository>(() => DocenteRepository());
   sl.registerLazySingleton<TurmasRepository>(() => TurmasRepository());
+  sl.registerLazySingleton<UserRepository>(() => UserRepository());
 
   sl.registerLazySingleton(
     () => AuthBloc(
