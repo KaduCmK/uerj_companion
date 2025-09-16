@@ -1,10 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uerj_companion/shared/config/flavors.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static const _emailKey = 'user_email';
+
+  User? get currentUser => _auth.currentUser;
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> getUserDocument(String uid) {
+    return _firestore.collection('users').doc(uid).get();
+  }
 
   Future<void> _saveEmail(String email) async {
     final prefs = await SharedPreferences.getInstance();

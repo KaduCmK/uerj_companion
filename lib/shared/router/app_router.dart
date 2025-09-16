@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uerj_companion/features/auth/presentation/onboarding_screen.dart';
 import 'package:uerj_companion/features/auth/presentation/validating_screen.dart';
 import 'package:uerj_companion/features/auth/presentation/welcome_screen.dart';
 import 'package:uerj_companion/features/cursos/presentation/bloc/curso_bloc.dart';
@@ -23,6 +24,13 @@ final appRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   routes: [
     GoRoute(path: '/login', builder: (context, state) => const WelcomeScreen()),
+    GoRoute(
+      path: '/onboarding',
+      builder: (context, state) => BlocProvider(
+        create: (context) => CursoBloc(cursosRepository: sl()),
+        child: const OnboardingScreen(),
+      ),
+    ),
     GoRoute(
       path: '/validating',
       builder: (context, state) => const ValidatingScreen(),

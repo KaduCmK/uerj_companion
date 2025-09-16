@@ -21,16 +21,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required FirebaseAuth firebaseAuth,
   }) : _authService = authService,
        _firebaseAuth = firebaseAuth,
-       super(AuthInitial()) {
+       super(Unauthenticated()) {
     _userSubscription = _firebaseAuth.authStateChanges().listen((user) {
-      _logger.i("User changed: $user");
+      _logger.i("User changed: $user | $state");
       add(AuthenticationUserChanged(user));
     });
 
     on<AuthenticationUserChanged>((event, emit) async {
-      if (event.user != null)
-        emit(Authenticated(event.user!));
-      else
+      if (event.user != null) {
+        final userDoc = await _authService.getUserDocument(event.user!.uid);
+        final onboardingComplete =
+            userDoc.exists && (userDoc.data()?['onboardingCompleted'] ?? false);
+
+        emit(
+          Authenticated(event.user!, onboardingCompleted: onboardingComplete),
+        );
+        _logger.i(state);
+      } else
         emit(Unauthenticated());
     });
 
@@ -46,11 +53,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<CheckSignInLink>((event, emit) async {
       if (_authService.isSignInLink(event.uri.toString())) {
-        if (_firebaseAuth.currentUser != null) {
+        if (_authService.currentUser != null) {
           _logger.i('Usuario já autenticado, ignorando o link de login');
 
           if (state is Authenticated)
-            emit(Authenticated(_firebaseAuth.currentUser!));
+            emit(
+              Authenticated(
+                _authService.currentUser!,
+                onboardingCompleted:
+                    (state as Authenticated).onboardingCompleted,
+              ),
+            );
           return;
         }
 
