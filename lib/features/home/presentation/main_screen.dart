@@ -18,15 +18,17 @@ class MainScreen extends StatelessWidget {
       },
       builder: (context, state) {
         final isAuthenticated = state is Authenticated;
+        final isAnonymous = isAuthenticated && state.isAnonymous;
+
         return Scaffold(
           appBar: AppBar(
             title: const Text('Uerjiano'),
             actions: [
-              if (isAuthenticated)
+              if (!isAnonymous)
                 IconButton(
                   icon: const CircleAvatar(child: Icon(Icons.person)),
                   onPressed: () {
-                    if (!(currentLocation== "/")) {
+                    if (!(currentLocation == "/")) {
                       context.push('/');
                     }
                   },
@@ -55,7 +57,7 @@ class MainScreen extends StatelessWidget {
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ),
-                isAuthenticated
+                !isAnonymous
                     ? OutlinedButton.icon(
                         onPressed: () {
                           context.pop();

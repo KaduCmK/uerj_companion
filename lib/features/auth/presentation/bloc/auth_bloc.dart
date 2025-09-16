@@ -22,7 +22,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required FirebaseAuth firebaseAuth,
   }) : _authService = authService,
        _firebaseAuth = firebaseAuth,
-       super(Unauthenticated()) {
+       super(AuthInitial()) {
     _userSubscription = _firebaseAuth.authStateChanges().listen((user) {
       _logger.i("User changed: $user");
       add(AuthenticationUserChanged(user));

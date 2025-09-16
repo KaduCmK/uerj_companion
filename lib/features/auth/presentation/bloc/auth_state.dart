@@ -8,6 +8,7 @@ sealed class AuthState extends Equatable {
   List<Object> get props => [];
 }
 
+final class AuthInitial extends AuthState {}
 
 final class Unauthenticated extends AuthState {}
 
@@ -23,6 +24,8 @@ final class Authenticated extends AuthState {
 
   const Authenticated(this.user, {required this.onboardingCompleted});
 
+  bool get isAnonymous => user.isAnonymous;
+  
   @override
   List<Object> get props => [user, onboardingCompleted];
 }

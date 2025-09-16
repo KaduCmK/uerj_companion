@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:uerj_companion/app_theme.dart';
 import 'package:uerj_companion/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:uerj_companion/firebase_options.dart';
@@ -25,12 +26,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late final GoRouter _router;
+
   @override
   void initState() {
     super.initState();
-    context.read<AuthBloc>().add(
-      CheckSignInLink(Uri.parse(Uri.base.toString())),
-    );
+    final authBloc = context.read<AuthBloc>()
+      ..add(CheckSignInLink(Uri.parse(Uri.base.toString())));
+    _router = createAppRouter(authBloc);
   }
 
   @override
@@ -39,8 +42,7 @@ class _MyAppState extends State<MyApp> {
       title: 'Uerjiano',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      routerConfig: appRouter,
-      // Usamos o builder para inserir um BlocListener global
+      routerConfig: _router,
       builder: (context, child) {
         return BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
