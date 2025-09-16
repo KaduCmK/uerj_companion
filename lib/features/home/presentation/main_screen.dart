@@ -24,7 +24,15 @@ class MainScreen extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Uerjiano'),
             actions: [
-              if (!isAnonymous)
+              if (isAnonymous)
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: FilledButton(
+                    onPressed: () => context.push('/login'),
+                    child: const Text('Login'),
+                  ),
+                )
+              else
                 IconButton(
                   icon: const CircleAvatar(child: Icon(Icons.person)),
                   onPressed: () {
@@ -32,14 +40,6 @@ class MainScreen extends StatelessWidget {
                       context.push('/');
                     }
                   },
-                )
-              else
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: FilledButton(
-                    onPressed: () => context.push('/login'),
-                    child: const Text('Login'),
-                  ),
                 ),
             ],
           ),

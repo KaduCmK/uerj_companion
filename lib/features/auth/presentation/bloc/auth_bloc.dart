@@ -32,10 +32,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (event.user != null) {
         final userDoc = await _authService.getUserDocument();
         final onboardingComplete =
-            userDoc.exists && (userDoc.data()?['onboardingCompleted'] ?? false);
+            userDoc.exists && (userDoc.data()?['onboardingComplete'] ?? false);
 
         emit(
-          Authenticated(event.user!, onboardingCompleted: onboardingComplete),
+          Authenticated(event.user!, onboardingComplete: onboardingComplete),
         );
       } else
         emit(Unauthenticated());
@@ -55,10 +55,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<CompleteOnboarding>((event, emit) async {
       emit(AuthLoading());
       try {
-        final userDoc = await _authService.getUserDocument();
-        await userDoc.reference.update({'onboardingCompleted': true});
+        _authService.completeOnboarding(event.curso);
         emit(
-          Authenticated(_authService.currentUser!, onboardingCompleted: true),
+          Authenticated(_authService.currentUser!, onboardingComplete: true),
         );
       } catch (e) {
         _logger.e(e);
@@ -85,8 +84,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             emit(
               Authenticated(
                 _authService.currentUser!,
-                onboardingCompleted:
-                    (state as Authenticated).onboardingCompleted,
+                onboardingComplete:
+                    (state as Authenticated).onboardingComplete,
               ),
             );
           return;

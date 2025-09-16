@@ -40,7 +40,7 @@ GoRouter createAppRouter(AuthBloc authBloc) {
 
       final isAuthenticated = authState is Authenticated;
       final isOnboardingComplete =
-          isAuthenticated && authState.onboardingCompleted;
+          isAuthenticated && authState.onboardingComplete;
 
       // Se o usuário está logado e já completou o onboarding
       if (isAuthenticated && isOnboardingComplete) {

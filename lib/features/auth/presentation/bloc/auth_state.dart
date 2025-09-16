@@ -20,14 +20,14 @@ final class AuthLinkSentSuccess extends AuthState {}
 
 final class Authenticated extends AuthState {
   final User user;
-  final bool onboardingCompleted;
+  final bool onboardingComplete;
 
-  const Authenticated(this.user, {required this.onboardingCompleted});
+  const Authenticated(this.user, {required this.onboardingComplete});
 
   bool get isAnonymous => user.isAnonymous;
   
   @override
-  List<Object> get props => [user, onboardingCompleted];
+  List<Object> get props => [user, onboardingComplete];
 }
 
 final class AuthError extends AuthState {

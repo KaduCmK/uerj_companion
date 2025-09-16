@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uerj_companion/features/cursos/domain/entities/curso.dart';
 import 'package:uerj_companion/shared/config/flavors.dart';
 
 class AuthService {
@@ -15,6 +16,13 @@ class AuthService {
   }
 
   Future<void> signInAnonymously() async => _auth.signInAnonymously();
+
+  Future<void> completeOnboarding(Curso? curso) async {
+    await _firestore.collection('users').doc(currentUser?.uid).set({
+      'onboardingComplete': true,
+      'cursoId': _firestore.collection('cursos').doc(curso?.id),
+    }, SetOptions(merge: true));
+  }
 
   Future<void> _saveEmail(String email) async {
     final prefs = await SharedPreferences.getInstance();
