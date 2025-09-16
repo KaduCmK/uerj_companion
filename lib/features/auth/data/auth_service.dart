@@ -10,9 +10,11 @@ class AuthService {
 
   User? get currentUser => _auth.currentUser;
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getUserDocument(String uid) {
-    return _firestore.collection('users').doc(uid).get();
+  Future<DocumentSnapshot<Map<String, dynamic>>> getUserDocument() {
+    return _firestore.collection('users').doc(currentUser?.uid).get();
   }
+
+  Future<void> signInAnonymously() async => _auth.signInAnonymously();
 
   Future<void> _saveEmail(String email) async {
     final prefs = await SharedPreferences.getInstance();

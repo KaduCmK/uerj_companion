@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uerj_companion/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:uerj_companion/features/auth/presentation/onboarding_screen.dart';
 import 'package:uerj_companion/features/auth/presentation/validating_screen.dart';
 import 'package:uerj_companion/features/auth/presentation/welcome_screen.dart';
@@ -22,6 +23,20 @@ final rootNavigatorKey = GlobalKey<NavigatorState>();
 final appRouter = GoRouter(
   initialLocation: '/',
   navigatorKey: rootNavigatorKey,
+  redirect: (context, state) {
+    final authState = context.read<AuthBloc>().state;
+    print(authState);
+
+    if (state.fullPath == '/onboarding' &&
+        (authState is Authenticated && authState.onboardingCompleted))
+      return '/';
+
+    if (authState is Unauthenticated ||
+        (authState is Authenticated && !authState.onboardingCompleted))
+      return '/onboarding';
+
+    return null;
+  },
   routes: [
     GoRoute(path: '/login', builder: (context, state) => const WelcomeScreen()),
     GoRoute(

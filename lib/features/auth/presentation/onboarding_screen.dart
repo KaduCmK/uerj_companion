@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:uerj_companion/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:uerj_companion/features/cursos/domain/entities/curso.dart';
 import 'package:uerj_companion/features/cursos/presentation/bloc/curso_bloc.dart';
@@ -18,8 +19,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void initState() {
     super.initState();
     final authState = context.read<AuthBloc>().state;
-    // if (authState is Unauthenticated)
-      // context.read<AuthBloc>().add(SignInAnonymously());
+    if (authState is Unauthenticated)
+      context.read<AuthBloc>().add(SignInAnonymously());
+  }
+
+  void completeOnboarding(Curso? curso) {
+    context.read<AuthBloc>().add(CompleteOnboarding(curso: curso));
+    context.go('/');
   }
 
   @override
@@ -70,17 +76,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   spacing: 4,
                   children: [
                     ElevatedButton(
-                      onPressed: null,
+                      onPressed: () => completeOnboarding(selectedCurso),
                       child: const Text('Entrar'),
-                      //  () => 
-                      // context.read<AuthBloc>().add(
-                      //   // CompleteOnboarding(curso: selectedCurso!),
-                      // ),
                     ),
                     TextButton(
-                      onPressed: null,
-                      //  () =>
-                      //     context.read<AuthBloc>().add(CompleteOnboarding()),
+                      onPressed: () => completeOnboarding(null),
                       child: const Text('Entrar sem curso'),
                     ),
                   ],

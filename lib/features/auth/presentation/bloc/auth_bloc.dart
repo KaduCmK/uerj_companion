@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:uerj_companion/features/auth/data/auth_service.dart';
+import 'package:uerj_companion/features/cursos/domain/entities/curso.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -23,22 +24,46 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
        _firebaseAuth = firebaseAuth,
        super(Unauthenticated()) {
     _userSubscription = _firebaseAuth.authStateChanges().listen((user) {
-      _logger.i("User changed: $user | $state");
+      _logger.i("User changed: $user");
       add(AuthenticationUserChanged(user));
     });
 
     on<AuthenticationUserChanged>((event, emit) async {
       if (event.user != null) {
-        final userDoc = await _authService.getUserDocument(event.user!.uid);
+        final userDoc = await _authService.getUserDocument();
         final onboardingComplete =
             userDoc.exists && (userDoc.data()?['onboardingCompleted'] ?? false);
 
         emit(
           Authenticated(event.user!, onboardingCompleted: onboardingComplete),
         );
-        _logger.i(state);
       } else
         emit(Unauthenticated());
+      _logger.i(state);
+    });
+
+    on<SignInAnonymously>((event, emit) async {
+      emit(AuthLoading());
+      try {
+        await _authService.signInAnonymously();
+      } catch (e) {
+        _logger.e(e);
+        emit(AuthError(e.toString()));
+      }
+    });
+
+    on<CompleteOnboarding>((event, emit) async {
+      emit(AuthLoading());
+      try {
+        final userDoc = await _authService.getUserDocument();
+        await userDoc.reference.update({'onboardingCompleted': true});
+        emit(
+          Authenticated(_authService.currentUser!, onboardingCompleted: true),
+        );
+      } catch (e) {
+        _logger.e(e);
+        emit(AuthError(e.toString()));
+      }
     });
 
     on<SendSignInLink>((event, emit) async {

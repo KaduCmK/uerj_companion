@@ -8,6 +8,17 @@ abstract class AuthEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+final class SignInAnonymously extends AuthEvent {}
+
+final class CompleteOnboarding extends AuthEvent {
+  final Curso? curso;
+
+  const CompleteOnboarding({this.curso});
+
+  @override
+  List<Object?> get props => [curso];
+}
+
 final class AuthenticationUserChanged extends AuthEvent {
   final User? user;
 
