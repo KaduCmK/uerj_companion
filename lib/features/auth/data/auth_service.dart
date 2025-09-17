@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uerj_companion/features/cursos/domain/entities/curso.dart';
@@ -7,6 +8,7 @@ import 'package:uerj_companion/shared/config/flavors.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFunctions _functions = FirebaseFunctions.instance;
   static const _emailKey = 'user_email';
 
   User? get currentUser => _auth.currentUser;
@@ -58,7 +60,22 @@ class AuthService {
     }
 
     if (_auth.isSignInWithEmailLink(uri.toString())) {
-      await _auth.signInWithEmailLink(email: email, emailLink: uri.toString());
+      if (_auth.currentUser != null && _auth.currentUser!.isAnonymous) {
+        final credential = EmailAuthProvider.credentialWithLink(
+          email: email,
+          emailLink: uri.toString(),
+        );
+        await _auth.currentUser!.linkWithCredential(credential);
+        await _functions.httpsCallable('updateUserAfterLinking').call({
+          'email': email,
+          'nome': _auth.currentUser?.displayName,
+        });
+      } else {
+        await _auth.signInWithEmailLink(
+          email: email,
+          emailLink: uri.toString(),
+        );
+      }
     }
   }
 }
