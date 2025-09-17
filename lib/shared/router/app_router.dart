@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uerj_companion/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:uerj_companion/features/auth/presentation/onboarding_screen.dart';
-import 'package:uerj_companion/features/auth/presentation/validating_screen.dart';
 import 'package:uerj_companion/features/auth/presentation/welcome_screen.dart';
 import 'package:uerj_companion/features/cursos/presentation/bloc/curso_bloc.dart';
 import 'package:uerj_companion/features/docentes/presentation/bloc/docentes/docentes_bloc.dart';
@@ -33,12 +32,11 @@ GoRouter createAppRouter(AuthBloc authBloc) {
       final authState = authBloc.state;
       final location = state.uri.toString();
 
-      final publicRoutes = ['/login', '/validating'];
+      final publicRoutes = ['/login'];
 
       if (authState is AuthInitial ||
           authState is AuthLoading ||
-          authState is AuthLinkSentSuccess ||
-          authState is AuthValidatingLink) {
+          authState is AuthLinkSentSuccess) {
         return null;
       }
 
@@ -71,18 +69,20 @@ GoRouter createAppRouter(AuthBloc authBloc) {
     routes: [
       GoRoute(
         path: '/login',
-        builder: (context, state) => const WelcomeScreen(),
-      ),
-      GoRoute(
-        path: '/onboarding',
-        builder: (context, state) => BlocProvider(
-          create: (context) => CursoBloc(cursosRepository: sl()),
-          child: const OnboardingScreen(),
+        pageBuilder: (context, state) => CustomPageTransition(
+          key: ValueKey(state.uri.toString()),
+          child: const WelcomeScreen(),
         ),
       ),
       GoRoute(
-        path: '/validating',
-        builder: (context, state) => const ValidatingScreen(),
+        path: '/onboarding',
+        pageBuilder: (context, state) => CustomPageTransition(
+          key: ValueKey(state.uri.toString()),
+          child: BlocProvider(
+            create: (context) => CursoBloc(cursosRepository: sl()),
+            child: const OnboardingScreen(),
+          ),
+        ),
       ),
       ShellRoute(
         navigatorKey: shellNavigatorKey,

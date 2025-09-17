@@ -16,7 +16,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
     super.initState();
-    print('welcome screen key: ' + _formKey.toString());
+    context.read<AuthBloc>().add(
+      CheckSignInLink(Uri.parse(Uri.base.toString())),
+    );
   }
 
   void _sendSignInLink() {

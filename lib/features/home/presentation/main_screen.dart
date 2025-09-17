@@ -12,10 +12,7 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentLocation = GoRouterState.of(context).uri.toString();
 
-    return BlocConsumer<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is AuthValidatingLink) context.go('/validating');
-      },
+    return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         final isAuthenticated = state is Authenticated;
         final isAnonymous = isAuthenticated && state.isAnonymous;

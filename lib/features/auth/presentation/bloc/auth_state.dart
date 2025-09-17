@@ -14,8 +14,6 @@ final class Unauthenticated extends AuthState {}
 
 final class AuthLoading extends AuthState {}
 
-final class AuthValidatingLink extends AuthState {}
-
 final class AuthLinkSentSuccess extends AuthState {}
 
 final class Authenticated extends AuthState {

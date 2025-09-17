@@ -77,23 +77,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<CheckSignInLink>((event, emit) async {
       if (_authService.isSignInLink(event.uri.toString())) {
-        if (_authService.currentUser != null && !_authService.currentUser!.isAnonymous) {
+        if (_authService.currentUser != null &&
+            !_authService.currentUser!.isAnonymous) {
           _logger.i('Usuario já autenticado, ignorando o link de login');
-
-          if (state is Authenticated)
-            emit(
-              Authenticated(
-                _authService.currentUser!,
-                onboardingComplete:
-                    (state as Authenticated).onboardingComplete,
-              ),
-            );
           return;
         }
 
-        emit(AuthValidatingLink());
+        emit(AuthLoading());
         try {
-          await _authService.handleSignInLink(event.uri);
+          final user = await _authService.handleSignInLink(event.uri);
+          add(AuthenticationUserChanged(user));
         } on FirebaseAuthException catch (e) {
           _logger.e('Falha em CheckSignInLink', error: e);
           emit(AuthError('Falha no login: ${e.message}'));

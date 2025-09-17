@@ -50,7 +50,7 @@ class AuthService {
   bool isSignInLink(String link) => _auth.isSignInWithEmailLink(link);
 
   // Processa o link quando o app é aberto
-  Future<void> handleSignInLink(Uri uri) async {
+  Future<User> handleSignInLink(Uri uri) async {
     final email = await _getEmail();
     if (email == null) {
       throw FirebaseAuthException(
@@ -77,5 +77,7 @@ class AuthService {
         );
       }
     }
+
+    return _auth.currentUser!;
   }
 }
