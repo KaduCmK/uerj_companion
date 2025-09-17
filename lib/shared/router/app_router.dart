@@ -23,6 +23,7 @@ import 'package:uerj_companion/shared/router/go_router_refresh_stream.dart';
 
 GoRouter createAppRouter(AuthBloc authBloc) {
   final rootNavigatorKey = GlobalKey<NavigatorState>();
+  final shellNavigatorKey = GlobalKey<NavigatorState>();
 
   return GoRouter(
     initialLocation: '/',
@@ -84,6 +85,7 @@ GoRouter createAppRouter(AuthBloc authBloc) {
         builder: (context, state) => const ValidatingScreen(),
       ),
       ShellRoute(
+        navigatorKey: shellNavigatorKey,
         builder: (context, state, child) {
           return MultiBlocProvider(
             providers: [
@@ -103,14 +105,14 @@ GoRouter createAppRouter(AuthBloc authBloc) {
           GoRoute(
             path: '/',
             pageBuilder: (context, state) => CustomPageTransition(
-              key: state.pageKey,
+              key: ValueKey(state.uri.toString()),
               child: const HomePage(),
             ),
           ),
           GoRoute(
             path: '/profile',
             pageBuilder: (context, state) => CustomPageTransition(
-              key: state.pageKey,
+              key: ValueKey(state.uri.toString()),
               child: BlocProvider(
                 create: (context) => ProfileBloc(
                   userRepository: sl(),
@@ -124,8 +126,10 @@ GoRouter createAppRouter(AuthBloc authBloc) {
           ...docenteRoutes,
           GoRoute(
             path: '/about',
-            pageBuilder: (context, state) =>
-                CustomPageTransition(key: state.pageKey, child: AboutScreen()),
+            pageBuilder: (context, state) => CustomPageTransition(
+              key: ValueKey(state.uri.toString()),
+              child: AboutScreen(),
+            ),
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uerj_companion/features/docentes/presentation/bloc/avaliacoes/avaliacoes_bloc.dart';
@@ -11,13 +12,15 @@ import 'package:uerj_companion/shared/router/custom_page_transition.dart';
 final docenteRoutes = [
   GoRoute(
     path: '/docentes',
-    pageBuilder: (context, state) =>
-        CustomPageTransition(key: state.pageKey, child: const DocentesScreen()),
+    pageBuilder: (context, state) => CustomPageTransition(
+      key: ValueKey(state.uri.toString()),
+      child: const DocentesScreen(),
+    ),
   ),
   GoRoute(
     path: '/edit-docente',
     pageBuilder: (context, state) => CustomPageTransition(
-      key: state.pageKey,
+      key: ValueKey(state.uri.toString()),
       child: const EditDocenteScreen(),
     ),
   ),
@@ -26,7 +29,7 @@ final docenteRoutes = [
     pageBuilder: (context, state) {
       final docenteId = state.pathParameters['id']!;
       return CustomPageTransition(
-        key: state.pageKey,
+        key: ValueKey(state.uri.toString()),
         child: BlocProvider(
           create: (context) => AvaliacoesBloc(
             docenteRepository: sl(),

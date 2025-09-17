@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uerj_companion/features/cursos/domain/entities/curso.dart';
@@ -10,15 +11,17 @@ import 'package:uerj_companion/shared/router/custom_page_transition.dart';
 final cursosRoutes = [
   GoRoute(
     path: '/info-cursos',
-    pageBuilder: (context, state) =>
-        CustomPageTransition(key: state.pageKey, child: CursosScreen()),
+    pageBuilder: (context, state) => CustomPageTransition(
+      key: ValueKey(state.uri.toString()),
+      child: CursosScreen(),
+    ),
   ),
   GoRoute(
     path: '/edit-curso',
     pageBuilder: (context, state) {
       final curso = state.extra as Curso?;
       return CustomPageTransition(
-        key: state.pageKey,
+        key: ValueKey(state.uri.toString()),
         child: BlocProvider(
           create: (context) =>
               CursoEditBloc(cursosRepository: sl(), cursoToEdit: curso)

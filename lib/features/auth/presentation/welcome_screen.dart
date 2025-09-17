@@ -13,6 +13,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    print('welcome screen key: ' + _formKey.toString());
+  }
+
   void _sendSignInLink() {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(

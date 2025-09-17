@@ -15,25 +15,32 @@ void main() async {
 
   setupLocator();
 
-  runApp(BlocProvider(create: (_) => sl<AuthBloc>(), child: const MyApp()));
+  final appRouter = createAppRouter(sl<AuthBloc>());
+
+  runApp(
+    BlocProvider(
+      create: (_) => sl<AuthBloc>(),
+      child: MyApp(router: appRouter),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final GoRouter router;
+
+  const MyApp({super.key, required this.router});
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  late final GoRouter _router;
-
   @override
   void initState() {
     super.initState();
-    final authBloc = context.read<AuthBloc>()
-      ..add(CheckSignInLink(Uri.parse(Uri.base.toString())));
-    _router = createAppRouter(authBloc);
+    context.read<AuthBloc>().add(
+      CheckSignInLink(Uri.parse(Uri.base.toString())),
+    );
   }
 
   @override
@@ -42,7 +49,7 @@ class _MyAppState extends State<MyApp> {
       title: 'Uerjiano',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      routerConfig: _router,
+      routerConfig: widget.router,
       builder: (context, child) {
         return BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
