@@ -1,3 +1,5 @@
+// kaducmk/uerj_companion/uerj_companion-feat-perfil-usuario/lib/shared/router/app_router.dart
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,44 +32,37 @@ GoRouter createAppRouter(AuthBloc authBloc) {
       final authState = authBloc.state;
       final location = state.uri.toString();
 
-      final publicRoutes = ['/login', '/validating', '/onboarding'];
+      final publicRoutes = ['/login', '/validating'];
 
-      if (authState is AuthInitial) {
-        // Enquanto o estado de auth não é determinado, não faça nada.
-        // O ideal é ter uma splash screen, mas por enquanto isso evita o redirect prematuro.
+      if (authState is AuthInitial ||
+          authState is AuthLoading ||
+          authState is AuthLinkSentSuccess ||
+          authState is AuthValidatingLink) {
         return null;
       }
 
       final isAuthenticated = authState is Authenticated;
+      final isAnonymous = isAuthenticated && authState.isAnonymous;
       final isOnboardingComplete =
           isAuthenticated && authState.onboardingComplete;
 
-      // Se o usuário está logado e já completou o onboarding
-      if (isAuthenticated && isOnboardingComplete) {
-        // Se ele tentar acessar uma rota pública (onboarding/login), redirecione para home
-        if (publicRoutes.contains(location)) {
-          return '/';
-        }
-        return null;
-      }
-
-      // Se o usuário está logado mas NÃO completou o onboarding
-      if (isAuthenticated && !isOnboardingComplete) {
-        // Garanta que ele esteja na tela de onboarding
-        if (location != '/onboarding') {
-          return '/onboarding';
-        }
-        return null;
-      }
-
-      // Se o usuário NÃO está logado
-      if (!isAuthenticated) {
-        // Permite acesso às rotas públicas, senão redireciona para a tela de login/onboarding
-        if (publicRoutes.contains(location)) {
+      // 2. Usuário logado, mas não completou o onboarding
+      if (!isOnboardingComplete) {
+        // Permite que o usuário anônimo vá para a tela de login
+        if (location == '/onboarding' ||
+            (isAnonymous && location == '/login')) {
           return null;
         }
-        // A lógica original envia para o onboarding para o login anônimo.
         return '/onboarding';
+      }
+
+      // 3. Usuário logado e onboarding completo
+      if (publicRoutes.contains(location) || location == '/onboarding') {
+        // Permite que o usuário anônimo vá para a tela de login
+        if (isAnonymous && location == '/login') {
+          return null;
+        }
+        return '/'; // Senão, redireciona para a home
       }
 
       return null;

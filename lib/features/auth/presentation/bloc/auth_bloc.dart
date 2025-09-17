@@ -77,7 +77,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<CheckSignInLink>((event, emit) async {
       if (_authService.isSignInLink(event.uri.toString())) {
-        if (_authService.currentUser != null) {
+        if (_authService.currentUser != null && !_authService.currentUser!.isAnonymous) {
           _logger.i('Usuario já autenticado, ignorando o link de login');
 
           if (state is Authenticated)
